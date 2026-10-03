@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prodotti — Database oggetti</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="document-wrapper">
+    <div class="page-title"><h1>Prodotti</h1><div id="count" class="item-count"></div></div>
+
+    <div class="product-section-buttons" role="group" aria-label="Selezione prodotti">
+      <button type="button" class="product-section-btn" data-section="saddles" title="Selle" aria-label="Selle"><img class="section-icon-img" src="assets/icon_selle.png" alt="" aria-hidden="true"><span>Selle</span></button>
+      <button type="button" class="product-section-btn" data-section="mapdrop" title="Prodotti trovati con lavori" aria-label="Prodotti trovati con lavori"><img class="section-icon-img" src="assets/icon_prodotti_lavoro.png" alt="" aria-hidden="true"><span>Prodotti trovati con lavori</span></button>
+      <button type="button" class="product-section-btn" data-section="quest" title="Oggetti missione" aria-label="Oggetti missione"><img class="section-icon-img" src="assets/icon_oggetti_missione.png" alt="" aria-hidden="true"><span>Oggetti missione</span></button>
+      <button type="button" class="product-section-btn" data-section="chests" title="Forzieri" aria-label="Forzieri"><img class="section-icon-img" src="assets/icon_forzieri.png" alt="" aria-hidden="true"><span>Forzieri</span></button>
+      <button type="button" class="product-section-btn" data-section="productions" title="Produzioni da professioni" aria-label="Produzioni da professioni"><img class="section-icon-img" src="assets/icon_produzioni.png" alt="" aria-hidden="true"><span>Produzioni da professioni</span></button>
+      <button type="button" class="product-section-btn recipe-main-btn" data-section="recipes" title="Ricette" aria-label="Ricette"><img class="section-icon-img section-icon-recipe" src="assets/icon_ricette.png" alt="" aria-hidden="true"><span>Ricette</span></button>
+      <button type="button" class="product-section-btn other-main-btn" data-section="other" title="Altro" aria-label="Altro">
+        <span class="other-icon" aria-hidden="true">•••</span><span>Altro</span>
+      </button>
+    </div>
+    <div id="saddle-set-filters" class="profession-filters" role="group" aria-label="Filtra Selle per set" hidden>
+      <span class="profession-label">Selle:</span>
+      <button type="button" class="profession-filter-btn saddle-set-filter-btn" data-setfilter="set">SET</button>
+      <button type="button" class="profession-filter-btn saddle-set-filter-btn" data-setfilter="noset">NO SET</button>
+    </div>
+    <div id="production-profession-filters" class="profession-filters" role="group" aria-label="Filtra produzioni per professione" hidden>
+      <span class="profession-label">Produzioni:</span>
+      <button type="button" class="profession-filter-btn production-profession-filter-btn" data-profession="1">Cuoco</button>
+      <button type="button" class="profession-filter-btn production-profession-filter-btn" data-profession="2">Medico Ciarlatano</button>
+      <button type="button" class="profession-filter-btn production-profession-filter-btn" data-profession="3">Fabbro</button>
+      <button type="button" class="profession-filter-btn production-profession-filter-btn" data-profession="4">Sellaio</button>
+    </div>
+    <div id="recipe-profession-filters" class="profession-filters" role="group" aria-label="Filtra ricette per professione" hidden>
+      <span class="profession-label">Ricette:</span>
+      <button type="button" class="profession-filter-btn recipe-profession-filter-btn" data-profession="1">Cuoco</button>
+      <button type="button" class="profession-filter-btn recipe-profession-filter-btn" data-profession="2">Medico Ciarlatano</button>
+      <button type="button" class="profession-filter-btn recipe-profession-filter-btn" data-profession="3">Fabbro</button>
+      <button type="button" class="profession-filter-btn recipe-profession-filter-btn" data-profession="4">Sellaio</button>
+    </div>
+    <div id="other-subcategory-filters" class="profession-filters other-subcategory-filters" role="group" aria-label="Filtra Altro" hidden>
+      <span class="profession-label">Altro:</span>
+      <button type="button" class="profession-filter-btn other-subcategory-filter-btn" data-other="events">Eventi</button>
+      <button type="button" class="profession-filter-btn other-subcategory-filter-btn" data-other="cards">Carte da collezione</button>
+      <button type="button" class="profession-filter-btn other-subcategory-filter-btn" data-other="avatar">Parte avatar</button>
+    </div>
+    <div class="toolbar product-toolbar">
+      <label id="input_level" class="product-tool">
+        <span>Livello</span>
+        <input id="level" class="west level-input" type="number" min="0" max="500"
+               placeholder="Tuo livello" aria-label="Tuo livello">
+      </label>
+
+      <div id="input_upgrade" class="upgrade_hint product-tool">Passa sul prodotto per upgrade e confronto</div>
+
+      <label id="input_search" class="product-tool search-tool">
+        <span>Cerca</span>
+        <input id="search" class="west" type="search"
+               placeholder="Nome, ID, set…" aria-label="Cerca">
+      </label>
+
+      <div id="sort_items" class="product-sort-tools">
+        <label class="product-tool">
+          <span>Ordina 1</span>
+          <select id="sort" class="west" aria-label="Ordina 1">
+            <option value="id" selected>ID</option>
+            <option value="name">Nome</option>
+            <option value="level">Livello oggetto</option>
+            <option value="strength">Forza</option>
+            <option value="flexibility">Agilità</option>
+            <option value="dexterity">Destrezza</option>
+            <option value="charisma">Carisma</option>
+            <option value="build">Costruzione</option>
+            <option value="punch">Vigore</option>
+            <option value="tough">Robustezza</option>
+            <option value="endurance">Energia</option>
+            <option value="health">Punti vita</option>
+            <option value="ride">Cavalcata</option>
+            <option value="reflex">Riflessi</option>
+            <option value="dodge">Schivata</option>
+            <option value="hide">Nascosto</option>
+            <option value="swim">Nuoto</option>
+            <option value="aim">Mira</option>
+            <option value="shot">Sparare</option>
+            <option value="pitfall">Trappole</option>
+            <option value="finger_dexterity">Precisione</option>
+            <option value="repair">Riparazione</option>
+            <option value="leadership">Comando</option>
+            <option value="tactic">Tattica</option>
+            <option value="trade">Negoziazione</option>
+            <option value="animal">Rapporto con gli animali</option>
+            <option value="appearance">Aspetto</option>
+            <option value="experience">Esperienza %</option>
+            <option value="dollar">Soldi %</option>
+            <option value="luck">Fortuna %</option>
+            <option value="regen">Rigenerazione %</option>
+            <option value="drop">Trova prodotti %</option>
+            <option value="speed">Velocità %</option>
+            <option value="labor_pts">Punti lavoro</option>
+            <option value="pray">Pregare</option>
+            <option value="fbdef">Forte — Difesa</option>
+            <option value="fboff">Forte — Attacco</option>
+            <option value="fbres">Forte — Resistenza</option>
+            <option value="fbdefs">Settore — Difesa</option>
+            <option value="fboffs">Settore — Attacco</option>
+            <option value="fbdmgs">Settore — Danni</option>
+            <option value="price">Prezzo acquisto</option>
+            <option value="upg_yes">Migliorabile</option>
+            <option value="upg_no">Non migliorabile</option>
+            <option value="auc_yes">Vendibile all'asta</option>
+            <option value="auc_no">Non vendibile all'asta</option>
+          </select>
+        </label>
+
+        <label class="product-tool">
+          <span>Ordina 2</span>
+          <select id="sort2" class="west secondary-sort" aria-label="Ordina 2">
+            <option value="">— Nessuno —</option>
+          </select>
+        </label>
+
+        <label class="product-tool mode-tool">
+          <span>Modalità</span>
+          <select id="sort_mode" class="west sort-mode" disabled>
+            <option value="priority" selected>Priorità (1° poi 2°)</option>
+            <option value="sum">Somma (1° + 2°)</option>
+          </select>
+        </label>
+
+        <label class="product-tool order-tool">
+          <span>Verso</span>
+          <select id="order" class="west mini">
+            <option value="asc" selected>↑</option>
+            <option value="desc">↓</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div id="compare_bar" class="compare_bar" aria-live="polite">
+      <div class="compare_left"><span id="compare_status">Seleziona 1–4 selle per il confronto</span></div>
+      <div class="compare_actions">
+        <button id="compare_btn" class="compare_btn" type="button" disabled>CONFRONTA</button>
+        <button id="compare_clear" class="compare_clear" type="button">Azzera</button>
+      </div>
+    </div>
+
+    <div id="compare_panel" class="compare_panel" hidden></div>
+    <div id="requirements_panel" class="requirements_panel" hidden></div>
+    <div id="items" class="items" aria-label="Elenco prodotti"></div>
+  </main>
+
+  <div id="popup_window" class="popup_window" aria-hidden="true">
+    <div class="popup_front"></div>
+    <div id="popup_contents" class="popup_contents"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

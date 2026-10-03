@@ -1,0 +1,5 @@
+V25 — 03/10/2026
+- Clic su Selle: mostra TUTTE le selle già classificate.
+- I pulsanti SET / NO SET restano disponibili e mantengono la classificazione approvata.
+- Nella vista TUTTE Selle restano attivi livello, ordinamenti, miglioramenti e confronto.
+- Nessun cambiamento alle altre categorie, ai bonus nativi, alle valute evento, carte da collezione o parti avatar.
