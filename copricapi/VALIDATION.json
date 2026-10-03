@@ -1,0 +1,56 @@
+{
+  "version": "v4_EVENTI_20260930",
+  "item_count": 606,
+  "unique_item_ids": 606,
+  "ordered_by_item_id_ascending": true,
+  "items_with_year": 305,
+  "items_with_event_icon": 281,
+  "year_only_no_icon": 25,
+  "sale_items": 19,
+  "dual_icon_items_in_head_category": 0,
+  "twir_version": "2.205.1",
+  "known_checks": {
+    "Sombrero di El Gringo": {
+      "set": "gold_rush_clothes",
+      "event_meta": {
+        "event": null,
+        "year": 2019,
+        "event_code": null,
+        "icons": [],
+        "source": "TWIR.setsCache"
+      }
+    },
+    "Corona di Elisabeth di Baviera": {
+      "set": "oktoberfest_2026_set_7",
+      "event_meta": {
+        "event": "Oktoberfest",
+        "year": 2026,
+        "event_code": "oktoberfest",
+        "icons": [
+          "oktoberfest"
+        ],
+        "source": "native-derived"
+      }
+    },
+    "Elmo di Maximilian": {
+      "set": "oktoberfest_2026_set_1",
+      "event_meta": {
+        "event": "Oktoberfest",
+        "year": 2026,
+        "event_code": "oktoberfest",
+        "icons": [
+          "oktoberfest"
+        ],
+        "source": "native-derived"
+      }
+    }
+  },
+  "assets_local": true,
+  "checks_passed": true,
+  "popup_sales_exact_matches": 1,
+  "popup_sales_exact_shorts": [
+    "harvest_sale_2020_hat"
+  ],
+  "event_layout": "event icon + event/year + CS, centered",
+  "cs_rule": "exact item.short match in TWIR.popupSales; pre-existing historic CS retained"
+}

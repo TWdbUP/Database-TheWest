@@ -1,0 +1,57 @@
+{
+  "version": "v1_20260930_from_copricapi_v5",
+  "category": "pants",
+  "title": "Pantaloni",
+  "item_count": 585,
+  "expected_from_master": 585,
+  "unique_item_ids": 585,
+  "unique_base_ids": 585,
+  "ordered_by_item_id_ascending": true,
+  "set_ids_referenced": 385,
+  "missing_set_refs": [],
+  "upgradeable_items": 408,
+  "items_with_year": 302,
+  "items_with_event_icon": 276,
+  "year_only_no_icon": 28,
+  "sale_items": 18,
+  "dual_icon_items": 0,
+  "twir_mapped_items": 275,
+  "native_derived_items": 29,
+  "twir_version": "2.205.1",
+  "known_checks": {
+    "54907": {
+      "name": "Pantaloni di Maximilian",
+      "set": "oktoberfest_2026_set_1",
+      "set_name": "Set abiti di Maximilian",
+      "event_meta": {
+        "event": "Oktoberfest",
+        "year": 2026,
+        "event_code": "oktoberfest",
+        "icons": [
+          "oktoberfest"
+        ],
+        "source": "native-derived"
+      }
+    },
+    "51146": {
+      "name": "Pantaloni di El Gringo",
+      "set": "gold_rush_clothes",
+      "set_name": "Set abiti di El Gringo",
+      "event_meta": {
+        "event": null,
+        "year": 2019,
+        "event_code": null,
+        "icons": [],
+        "source": "TWIR.setsCache"
+      }
+    }
+  },
+  "assets_local": true,
+  "checks_passed": true,
+  "popup_sales_exact_matches": 1,
+  "popup_sales_exact_shorts": [
+    "harvest_sale_2020_pants"
+  ],
+  "event_layout": "event icon + event/year + CS, centered",
+  "cs_rule": "exact item.short match in TWIR.popupSales; pre-existing historic CS retained"
+}
