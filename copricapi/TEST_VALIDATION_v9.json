@@ -1,0 +1,17 @@
+{
+  "version": "v9_TEST",
+  "date": "2026-10-01",
+  "fixes": [
+    "Ordina rinominato Ordina 1",
+    "Bonus per livello usati come coefficiente nativo quando il livello giocatore è vuoto",
+    "Confronto mostra nuovamente attributi/skill per gli oggetti con bonus per livello",
+    "Doppio ordinamento e Somma funzionano anche senza livello giocatore",
+    "Impedita combo dello stesso criterio due volte",
+    "Somma abilitata solo per metriche bonus compatibili"
+  ],
+  "checks": {
+    "js_syntax": true,
+    "items": 606,
+    "selected_first_preserved": true
+  }
+}
