@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Armi da duello — Fuoco — The West Database</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="document-wrapper">
+    <div class="wiki-title">
+      <h1>Armi da duello — Fuoco</h1>
+      <div id="count" class="item-count"></div>
+    </div>
+
+    <div class="toolbar">
+      <label class="tool">
+        <span>Livello</span>
+        <input id="level" class="west level-input" type="number" min="0" max="500" placeholder="Tuo livello">
+      </label>
+
+      <label class="tool search-tool">
+        <span>Cerca</span>
+        <input id="search" class="west" type="search" placeholder="Nome, ID, set…">
+      </label>
+
+      <label class="tool">
+        <span>Ordina 1</span>
+        <select id="sort" class="west">
+          <option value="base_id">ID</option>
+          <option value="name">Nome</option>
+          <option value="level">Livello oggetto</option>
+          <option value="strength">Forza</option>
+          <option value="flexibility">Agilità</option>
+          <option value="dexterity">Destrezza</option>
+          <option value="charisma">Carisma</option>
+          <option value="build">Costruzione</option>
+          <option value="punch">Vigore</option>
+          <option value="tough">Robustezza</option>
+          <option value="endurance">Energia</option>
+          <option value="health">Punti vita</option>
+          <option value="ride">Cavalcata</option>
+          <option value="reflex">Riflessi</option>
+          <option value="dodge">Schivata</option>
+          <option value="hide">Nascosto</option>
+          <option value="swim">Nuoto</option>
+          <option value="aim">Mira</option>
+          <option value="shot">Sparare</option>
+          <option value="pitfall">Trappole</option>
+          <option value="finger_dexterity">Precisione</option>
+          <option value="repair">Riparazione</option>
+          <option value="leadership">Comando</option>
+          <option value="tactic">Tattica</option>
+          <option value="trade">Negoziazione</option>
+          <option value="animal">Rapporto con gli animali</option>
+          <option value="appearance">Aspetto</option>
+          <option value="experience">Esperienza %</option>
+          <option value="dollar">Soldi %</option>
+          <option value="luck">Fortuna %</option>
+          <option value="regen">Rigenerazione %</option>
+          <option value="drop">Trova prodotti %</option>
+          <option value="speed">Velocità %</option>
+          <option value="labor_pts">Punti lavoro</option>
+          <option value="fbdef">Forte — Difesa</option>
+          <option value="fboff">Forte — Attacco</option>
+          <option value="fbres">Forte — Resistenza</option>
+          <option value="fbdefs">Settore — Difesa</option>
+          <option value="fboffs">Settore — Attacco</option>
+          <option value="fbdmgs">Settore — Danni</option>
+          <option value="damage_avg">Danno medio</option>
+          <option value="damage_max">Danno massimo</option>
+          <option value="price">Prezzo acquisto</option>
+        </select>
+      </label>
+
+
+      <label class="tool">
+        <span>Ordina 2</span>
+        <select id="sort2" class="west secondary-sort">
+          <option value="">— Nessuno —</option>
+        </select>
+      </label>
+
+      <label class="tool mode-tool">
+        <span>Modalità</span>
+        <select id="sort_mode" class="west sort-mode" disabled>
+          <option value="priority" selected>Priorità (1° poi 2°)</option>
+          <option value="sum">Somma (1° + 2°)</option>
+        </select>
+      </label>
+
+      <label class="tool order-tool">
+        <span>Verso</span>
+        <select id="order" class="west mini">
+          <option value="asc" selected>↑</option>
+          <option value="desc">↓</option>
+        </select>
+      </label>
+    </div>
+
+
+
+    <div id="compare_bar" class="compare_bar" aria-live="polite">
+      <div class="compare_left"><span id="compare_status">Seleziona 1–4 oggetti per il confronto</span></div>
+      <div class="compare_actions">
+        <button id="compare_btn" class="compare_btn" type="button" disabled>CONFRONTA</button>
+        <button id="compare_clear" class="compare_clear" type="button">Azzera</button>
+      </div>
+    </div>
+
+    <div id="compare_panel" class="compare_panel" hidden></div>
+    <div id="items" class="items" aria-label="Elenco armi da duello — fuoco"></div>
+  </main>
+
+  <div id="popup_window" class="popup_window" aria-hidden="true">
+    <div class="popup_front"></div>
+    <div id="popup_contents" class="popup_contents"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

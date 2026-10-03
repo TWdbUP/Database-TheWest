@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-01",
+  "source_package": "armi_duello_contusione_NATIVE_REBUILD_v2_STABILE_20260930.zip",
+  "features_added": [
+    "confronto 1-4",
+    "selezionati davanti",
+    "Ordina 1 + Ordina 2",
+    "Priorita",
+    "Somma",
+    "bonus per livello disponibili senza livello come coefficiente nativo"
+  ],
+  "category_title": null
+}

@@ -1,0 +1,61 @@
+{
+  "version": "v1_20260930",
+  "title": "Armi da duello — Contusione",
+  "filter": "right_arm/hand",
+  "item_count": 418,
+  "unique_item_ids": 418,
+  "ordered_by_item_id_ascending": true,
+  "old_package_item_count": 418,
+  "exact_membership_matches_old_package": true,
+  "set_ids_referenced": 316,
+  "missing_set_refs": [],
+  "upgradeable_items": 253,
+  "items_with_year": 277,
+  "items_with_event_icon": 261,
+  "dual_icon_items": 12,
+  "known_checks": {
+    "Sciabola di Leavenworth": {
+      "item_id": 53474000,
+      "set": "oktoberfest_2023_set_5",
+      "event_meta": {
+        "event": "Oktoberfest",
+        "year": 2023,
+        "event_code": "oktoberfest",
+        "icons": [
+          "oktoberfest"
+        ],
+        "source": "TWIR.setsCache"
+      }
+    },
+    "dual_icon_sample": {
+      "name": "Coltellino di James Brooks",
+      "item_id": 52899000,
+      "set": "independence_day_2022_set_6",
+      "event_meta": {
+        "event": "Giorno dell'Indipendenza",
+        "year": 2022,
+        "event_code": "independence",
+        "icons": [
+          "independence",
+          "sale"
+        ],
+        "source": "TWIR.setsCache + native-set-id",
+        "sale_year": 2022,
+        "text": "Giorno dell'Indipendenza · 2022"
+      }
+    }
+  },
+  "twir_version": "2.205.1",
+  "assets_local": true,
+  "checks_passed": true,
+  "popup_sales_exact_matches": 5,
+  "popup_sales_exact_shorts": [
+    "harvest_sale_2020_melee",
+    "independence_2026_set2_melee",
+    "independence_2026_set3_melee",
+    "independence_2026_set4_melee",
+    "item_51615"
+  ],
+  "event_layout": "event icon + event/year + CS, centered",
+  "cs_rule": "exact item.short match in TWIR.popupSales; pre-existing historic CS retained"
+}

@@ -1,0 +1,61 @@
+{
+  "version": "v1_20260930",
+  "title": "Fucili",
+  "filter": "left_arm",
+  "item_count": 445,
+  "unique_item_ids": 445,
+  "ordered_by_item_id_ascending": true,
+  "old_package_item_count": 445,
+  "exact_membership_matches_old_package": true,
+  "set_ids_referenced": 341,
+  "missing_set_refs": [],
+  "upgradeable_items": 271,
+  "items_with_year": 278,
+  "items_with_event_icon": 258,
+  "dual_icon_items": 12,
+  "known_checks": {
+    "Fucile di Leavenworth": {
+      "item_id": 53476000,
+      "set": "oktoberfest_2023_set_5",
+      "event_meta": {
+        "event": "Oktoberfest",
+        "year": 2023,
+        "event_code": "oktoberfest",
+        "icons": [
+          "oktoberfest"
+        ],
+        "source": "TWIR.setsCache"
+      }
+    },
+    "dual_icon_sample": {
+      "name": "Fucile di James Brooks",
+      "item_id": 52901000,
+      "set": "independence_day_2022_set_6",
+      "event_meta": {
+        "event": "Giorno dell'Indipendenza",
+        "year": 2022,
+        "event_code": "independence",
+        "icons": [
+          "independence",
+          "sale"
+        ],
+        "source": "TWIR.setsCache + native-set-id",
+        "sale_year": 2022,
+        "text": "Giorno dell'Indipendenza · 2022"
+      }
+    }
+  },
+  "twir_version": "2.205.1",
+  "assets_local": true,
+  "checks_passed": true,
+  "popup_sales_exact_matches": 5,
+  "popup_sales_exact_shorts": [
+    "harvest_sale_2020_fort",
+    "independence_2026_set2_fort",
+    "independence_2026_set3_fort",
+    "independence_2026_set4_fort",
+    "item_51798"
+  ],
+  "event_layout": "event icon + event/year + CS, centered",
+  "cs_rule": "exact item.short match in TWIR.popupSales; pre-existing historic CS retained"
+}
