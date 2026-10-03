@@ -1,0 +1,10 @@
+SOTTOCATEGORIE ALTRO - fonte: TheWest_MASTER_NATIVE_20260929.json
+
+Eventi: 62 oggetti
+Famiglie: Pretzel, Cuori, Uova di Pasqua, Fuochi d'artificio, Cempasúchil
+
+Carte da collezione: 73 contenitori -> 365 carte collection
+Ogni contenitore e' mappato alle 5 carte nominate dal proprio usebonus nativo.
+
+Parte avatar: 52 oggetti
+Criterio: nome o usebonus nativo che inizia con 'Parte avatar:'.
