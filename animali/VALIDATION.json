@@ -1,0 +1,56 @@
+{
+  "version": "v1_20260930",
+  "title": "Animali",
+  "filter": "animal",
+  "item_count": 368,
+  "unique_item_ids": 368,
+  "ordered_by_item_id_ascending": true,
+  "old_package_item_count": 368,
+  "exact_membership_matches_old_package": true,
+  "set_ids_referenced": 306,
+  "missing_set_refs": [],
+  "upgradeable_items": 203,
+  "items_with_year": 263,
+  "items_with_event_icon": 216,
+  "dual_icon_items": 24,
+  "known_checks": {
+    "Mucca di Leavenworth": {
+      "item_id": 53550000,
+      "set": "oktoberfest_sale_2023_set_1",
+      "event_meta": {
+        "event": "Oktoberfest",
+        "year": 2023,
+        "event_code": "oktoberfest",
+        "icons": [
+          "oktoberfest",
+          "sale"
+        ],
+        "source": "TWIR.setsCache + native-set-id",
+        "sale_year": 2023,
+        "text": "Oktoberfest · 2023"
+      }
+    }
+  },
+  "twir_version": "2.205.1",
+  "assets_local": true,
+  "checks_passed": true,
+  "popup_sales_exact_matches": 14,
+  "popup_sales_exact_shorts": [
+    "easter_2023_animal_2",
+    "easter_2023_animal_3",
+    "easter_2023_animal_4",
+    "easter_2024_animal_2",
+    "easter_2024_animal_3",
+    "easter_2024_animal_4",
+    "easter_2025_animal_2",
+    "easter_2025_animal_3",
+    "easter_2025_animal_4",
+    "easter_2026_animal_2",
+    "easter_2026_animal_3",
+    "easter_2026_animal_4",
+    "harvest_sale_2020_animal",
+    "item_51612"
+  ],
+  "event_layout": "event icon + event/year + CS, centered",
+  "cs_rule": "exact item.short match in TWIR.popupSales; pre-existing historic CS retained"
+}

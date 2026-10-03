@@ -1,0 +1,191 @@
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%;font-family:Arial,Verdana,sans-serif;color:#3d2718}
+body{
+  background-attachment:fixed;
+  background-image:
+    url("https://wiki.the-west.net/images/7/73/bg-cover-right.png"),
+    url("https://wiki.the-west.net/images/6/6a/bg-cover-left.png"),
+    url("https://wiki.the-west.net/images/8/8f/bg-cover-bottom.png"),
+    url("https://wiki.the-west.net/images/5/56/background.jpg");
+  background-position:right center,left center,center bottom,center center;
+  background-size:auto,auto,auto,cover;
+  background-repeat:repeat-y,repeat-y,repeat-x,no-repeat;
+  background-color:#d9b978;
+}
+#document-wrapper{width:100%;max-width:1200px;margin:0 auto;padding:18px 20px 40px}
+.wiki-title{position:relative;max-width:800px;height:49px;margin:auto;background:url("https://wiki.the-west.net/images/b/b3/Title.png") no-repeat;background-size:100% 100%}
+.wiki-title h1{margin:0;padding:10px 0 0;text-align:center;color:#ffdead;font-size:25px;font-weight:bold;text-shadow:1px 1px 2px #000}
+.item-count{position:absolute;right:18px;bottom:5px;color:#f3dab0;font-size:11px;text-shadow:1px 1px 1px #000}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:end;justify-content:center;padding:8px 10px;margin:0 auto 5px;max-width:1080px;background:rgba(239,225,194,.56);border:1px solid rgba(93,56,25,.25)}
+.tool{display:flex;flex-direction:column;gap:2px;font-size:10px;color:#6b5138}
+input.west,select.west{height:29px;border:1px solid #8e704c;background:#f4e7ca;color:#4a3422;padding:3px 7px;border-radius:2px;outline:none;font-size:13px;box-shadow:inset 0 1px rgba(255,255,255,.65)}
+input.west:focus,select.west:focus{border-color:#5c3b1e}
+.level-input{width:95px;text-align:center}
+.search-tool input{width:210px}
+select.west{width:190px}
+select.mini{width:55px}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:5px;align-items:start}
+.item_card{min-width:0;text-align:center}
+.item_container{width:79px;height:79px;position:relative;margin:0 auto;background-image:url("https://wiki.the-west.net/images/e/ec/Item_box.png");background-repeat:no-repeat;background-size:contain;cursor:pointer}
+.item_container>img{position:absolute;top:3px;left:3px;width:73px;height:73px;object-fit:contain}
+.popup_window{position:absolute;display:none;min-width:255px;max-width:390px;z-index:10000;text-align:left;white-space:normal}
+.popup_front{position:absolute;inset:0;background:#eee9dc;border:1px solid #8d795e;border-radius:3px;box-shadow:0 2px 7px rgba(0,0,0,.35)}
+.popup_contents{position:relative;z-index:1;margin:18px 21px;font-size:12px;line-height:1.25}
+.popup_contents p{margin:0}
+.popup_image{background-image:url("https://wiki.the-west.net/images/e/ec/Item_box.png");background-repeat:no-repeat;width:79px;height:79px;margin:auto;position:relative}
+.popup_image img{padding-top:3px;padding-left:4px;width:73px;height:73px;object-fit:contain}
+.item_level_popup{position:absolute;display:flex;align-items:center;height:15px;line-height:14px;margin:4px 3px;z-index:2;color:#fff;font-size:12px;white-space:nowrap}
+.item_level_popup .popup_icon_level{display:block;width:15px;height:12px;background:url("https://westzz.innogamescdn.com/images/items/item_level.png") no-repeat;margin-right:1px}
+.item_level_popup .popup_level_value{display:block;min-width:10px;height:13px;line-height:13px;text-align:center;color:#fff;text-shadow:black -1px 0 1px,black 0 1px 1px,black 1px 0 1px,black 0 -1px 1px}
+.popup_divider{width:124px;height:6px;margin:4px auto;background-image:url("https://wiki.the-west.net/images/c/c1/Divider.png")}
+.popup_name{font-size:13px;color:#070;font-weight:bold;text-align:center;padding-top:3px}
+.popup_type{font-style:italic;font-size:10px;text-align:center;margin-bottom:5px!important}
+.bonus_attr{color:#070;font-weight:bold;padding-left:3px}
+.bonus_skill{color:#070;padding-left:12px}
+.bonus_misc{color:#075e27;padding-left:3px}
+.bonus_fort{color:#075e27;font-weight:bold;padding-left:3px}
+.bonus_negative{color:#900}
+.popup_set{color:#800080;font-weight:bold;text-align:center;margin-top:7px!important}
+.set_members{font-size:10px;color:#675441;margin:2px 0 5px;padding-left:18px}
+.event_line{display:flex;align-items:center;justify-content:center;gap:6px;text-align:center;color:#8b5a16;font-weight:bold;margin:5px auto 0!important;min-height:26px;width:100%}
+.event_icon{width:24px;height:26px;object-fit:contain;vertical-align:middle}
+.native_note{text-align:center;color:#7d6b58;font-size:9px;margin-top:2px!important}
+.popup_prices{text-align:center;margin-top:7px}
+.popup_price{display:inline-block;margin:0 7px}
+.price_icon{width:16px;height:16px;vertical-align:middle;margin-right:2px}
+.price_action_icon{width:15px;height:10px;object-fit:contain;vertical-align:middle;margin-right:3px}
+.currency_icon{width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:2px}
+.popup_meta{text-align:center;margin-top:5px;font-size:10px;color:#5c4632}
+.popup_id{color:#174b9a}
+.popup_warn{color:#8a4a20;font-size:10px;text-align:center}
+.empty{text-align:center;padding:35px;color:#60472e;background:rgba(239,225,194,.6);grid-column:1/-1}
+
+/* Miglioramento direttamente sull'oggetto — comportamento del pacchetto precedente */
+.upgrade_controls{
+  position:absolute;
+  left:3px;
+  top:4px;
+  height:15px;
+  display:flex;
+  align-items:center;
+  z-index:20;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.upgrade_controls .item_level{
+  position:static;
+  display:none;
+  width:15px;
+  height:12px;
+  line-height:12px;
+  background:transparent;
+  text-align:center;
+  font-size:12px;
+  padding:0;
+  margin:0 2px 0 0;
+  color:#fff;
+  font-weight:normal;
+  box-shadow:none;
+  border-radius:0;
+  text-shadow:none;
+  white-space:nowrap;
+  z-index:1;
+  pointer-events:none;
+}
+.upgrade_controls .icon_level{
+  display:block;
+  width:15px;
+  height:12px;
+  background:url("https://westzz.innogamescdn.com/images/items/item_level.png") no-repeat;
+  margin:0;
+}
+.upgrade_controls .upgrade_level_value{
+  display:none;
+  min-width:13px;
+  height:13px;
+  line-height:13px;
+  text-align:center;
+  color:#fff;
+  font-size:12px;
+  font-weight:normal;
+  text-shadow:black -1px 0 1px,black 0 1px 1px,black 1px 0 1px,black 0 -1px 1px;
+  pointer-events:none;
+}
+.upgrade_controls .upgrade,
+.upgrade_controls .downgrade{
+  position:static;
+  display:none;
+  flex:0 0 auto;
+  width:12px;
+  height:12px;
+  padding:0;
+  cursor:pointer;
+  pointer-events:auto;
+}
+.upgrade_controls .upgrade{
+  background:url("https://wiki.the-west.net/images/c/ca/Upgrade_icons.png") 0 12px;
+  margin:0 2px 0 1px;
+}
+.upgrade_controls .upgrade:hover{background-position-y:0}
+.upgrade_controls .downgrade{
+  background:url("https://wiki.the-west.net/images/c/ca/Upgrade_icons.png") 12px 12px;
+  margin:0 2px;
+}
+.upgrade_controls .downgrade:hover{background-position-y:0}
+.upgrade_controls[data-lvl]:not([data-lvl="0"]) .item_level,
+.upgrade_controls[data-lvl]:not([data-lvl="0"]) .upgrade_level_value{display:block}
+.item_container:hover .upgrade_controls .upgrade{display:inline-block}
+.item_container:hover .upgrade_controls[data-lvl]:not([data-lvl="0"]) .downgrade{display:inline-block}
+.upgrade_controls[data-lvl="0"] .item_level,
+.upgrade_controls[data-lvl="0"] .upgrade_level_value{display:none}
+
+@media(max-width:720px){
+  #document-wrapper{padding:10px}
+  .items{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}
+  .toolbar{justify-content:flex-start}
+  .search-tool{flex:1 1 180px}
+  .search-tool input{width:100%}
+}
+
+.event_text{display:inline-block;text-align:center}
+.event_sale_icon{margin-left:1px}
+
+/* Confronto 1–4 oggetti — base o migliorati */
+.item_container .compare_check{
+  display:none;position:absolute;right:4px;bottom:4px;width:17px;height:17px;margin:0;padding:0;
+  z-index:25;cursor:pointer;appearance:none;background:rgba(0,0,0,.55);border:1px solid #d8c39a;
+  box-shadow:1px 1px 2px #000
+}
+.item_container:hover .compare_check,.item_container.compare_selected .compare_check{display:block}
+.item_container .compare_check:checked{background:#8b6a20;border-color:#f2d37c}
+.item_container .compare_check:checked:after{content:'✓';display:block;color:#fff;font:bold 14px/15px Arial;text-align:center;text-shadow:1px 1px 1px #000}
+.item_container.compare_selected{box-shadow:0 0 0 2px rgba(128,64,0,.75),0 1px 3px rgba(0,0,0,.45)}
+.item_container.compare_selected:after{content:'';position:absolute;right:0;bottom:0;width:23px;height:23px;border-radius:2px;background:rgba(128,64,0,.12);pointer-events:none}
+.compare_bar{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:3px auto 7px;padding:5px 9px;max-width:900px;border:1px solid rgba(93,56,25,.45);background:rgba(239,225,194,.78);box-shadow:inset 0 1px rgba(255,255,255,.55),0 1px 2px rgba(0,0,0,.18);font-size:12px}
+.compare_actions{display:flex;gap:5px;align-items:center}
+.compare_btn,.compare_clear{font:700 11px Arial,Verdana,sans-serif;color:#f7ead1;text-shadow:1px 1px 1px #241306;border:1px solid #3b210e;padding:4px 9px;cursor:pointer;background:linear-gradient(#9b6b38,#5e3518);box-shadow:inset 0 1px rgba(255,255,255,.25),1px 1px 2px rgba(0,0,0,.25)}
+.compare_btn:disabled{opacity:.45;cursor:default}
+.compare_clear{background:linear-gradient(#8b8170,#554c40);font-weight:normal}
+.compare_panel{margin:0 auto 10px;padding:8px;max-width:900px;background:rgba(239,225,194,.92);border:1px solid rgba(93,56,25,.55);box-shadow:0 1px 3px rgba(0,0,0,.22)}
+.compare_panel[hidden]{display:none}
+.compare_title{text-align:center;font-weight:bold;color:#5d361b;font-size:13px;margin-bottom:6px}
+.compare_multi_head{display:grid;gap:5px;margin-bottom:5px}
+.compare_card{min-width:0;text-align:center;padding:4px;background:rgba(255,250,237,.55);border:1px solid rgba(112,76,42,.25)}
+.compare_card img{width:52px;height:52px;object-fit:contain;vertical-align:middle}
+.compare_card .compare_name{font-weight:bold;font-size:11px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compare_card .compare_lvl{font-size:10px;color:#704a28;margin-top:2px;min-height:13px}
+.compare_card .icon_level{display:inline-block;width:15px;height:12px;vertical-align:-2px;background:url('https://westzz.innogamescdn.com/images/items/item_level.png') no-repeat;margin-right:2px}
+.compare_table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.compare_table td{padding:3px 5px;border-top:1px solid rgba(112,76,42,.22)}
+.compare_table td.val{width:auto;text-align:center;font-weight:bold}
+.compare_table .compare_label_row td{padding:1px 4px 3px;border-top:0;text-align:center;color:#4d3827;font-weight:normal;font-size:10px}
+.compare_table .better{color:#16802a}.compare_table .worse{color:#a02020}.compare_table .equal{color:#4d3827}
+.compare_hint{text-align:center;color:#765b3b;font-style:italic;font-size:11px;padding:7px 3px 2px}
+@media(max-width:720px){.compare_bar{gap:5px;flex-wrap:wrap}.compare_panel{overflow-x:auto}.compare_multi_head,.compare_table{min-width:520px}}
+
+
+/* Ordinamento doppio / combo */
+select.secondary-sort{width:190px}
+select.sort-mode{width:170px}
+select.sort-mode:disabled{opacity:.55;cursor:default}
+@media(max-width:720px){select.secondary-sort,select.sort-mode{width:100%}.mode-tool,.order-tool{flex:1 1 120px}}
