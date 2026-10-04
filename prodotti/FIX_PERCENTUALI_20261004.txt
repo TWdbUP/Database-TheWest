@@ -1,0 +1,5 @@
+Correzione 04/10/2026
+- Rimossi gli Math.round finali sulle percentuali migliorabili.
+- EXP, soldi, fortuna, rigenerazione, drop e velocita possono mostrare decimali.
+- RoundingMethod nativi per bonus per livello/Punti lavoro conservati.
+- Aggiunto cache-busting a CSS/app.

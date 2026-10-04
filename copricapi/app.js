@@ -120,7 +120,7 @@ function characterEntryMetricValue(entry,up,level){
 }
 function replaceLeadingValue(desc,value,percent=false){
   if(!desc) return null;
-  const shown=percent ? fmt(value*100)+'%' : fmt(value);
+  const shown=percent ? String(Math.round(value*100))+'%' : fmt(value);
   return String(desc).replace(/^\s*\+\s*[-+]?\d+(?:[.,]\d+)?%?/, '+ '+shown);
 }
 function fortLabel(name,isSector){
@@ -141,7 +141,7 @@ function displayInner(inner,value,entryDesc=null){
     return `+ ${fmt(value)} ${esc(fortLabel(inner.name,!!inner.isSector))}`;
   }
   if(PERCENT.has(type)){
-    return `+ ${fmt(value*100)}% ${esc(LABELS[type]||type)}`;
+    return `+ ${Math.round(value*100)}% ${esc(LABELS[type]||type)}`;
   }
   if(type==='pray') return `+ ${fmt(value)} Prega`;
   if(type==='damage') return `+ ${fmt(value)} Danni`;
@@ -434,8 +434,10 @@ function updateSortModeState(){
 function compareLabel(key){ return COMPARE_LABELS[key] || LABELS[key] || key; }
 function compareFormat(key,value){
   if(value==null) return '—';
-  const sign=value>0?'+ ':'';
-  return sign+fmt(value)+(PERCENT.has(key)||key==='speed'?'%':'');
+  const isPercent=PERCENT.has(key)||key==='speed';
+  const shown=isPercent?Math.round(value):value;
+  const sign=shown>0?'+ ':'';
+  return sign+fmt(shown)+(isPercent?'%':'');
 }
 function compareItemHasValue(item,key){
   const v=metric(item,key);

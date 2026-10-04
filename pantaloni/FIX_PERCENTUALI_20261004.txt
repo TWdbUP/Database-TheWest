@@ -1,0 +1,5 @@
+Correzione 04/10/2026
+- Percentuali migliorabili mostrate con i decimali nativi (EXP, soldi, fortuna, rigenerazione, drop e bonus velocita).
+- Nessun arrotondamento intero aggiuntivo.
+- I bonus con roundingMethod nativo (es. Punti lavoro floatceil) restano invariati.
+- Aggiunto cache-busting a CSS/data/app.
