@@ -420,6 +420,9 @@ function init(){
     render();
     if(activeItem&&$("#popup_window").style.display==="block")$("#popup_contents").innerHTML=createPopup(activeItem);
   });
+  // POSTIT 1 — reset UP prodotti
+  const resetUpBtn=$("#resetUp");
+  if(resetUpBtn)resetUpBtn.addEventListener("click",()=>{upgradeById.clear();render();});
   render();
 }
 init();
@@ -973,3 +976,7 @@ function render(){
     compareSelected.clear();compareOpen=false;render();
   });
 })();;
+
+
+// POSTIT 1 — scorrimento rapido
+(()=>{const top=document.querySelector('#goTop'),bottom=document.querySelector('#goBottom');if(top)top.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));if(bottom)bottom.addEventListener('click',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}));function upd(){const y=window.scrollY,h=window.innerHeight,doc=document.documentElement.scrollHeight;if(top)top.classList.toggle('show',y>220);if(bottom)bottom.classList.toggle('show',y+h<doc-220)}window.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();})();

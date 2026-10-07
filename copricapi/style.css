@@ -199,3 +199,12 @@ select.sort-mode:disabled{opacity:.55;cursor:default}
 .set-filter-btn:hover{filter:brightness(1.06)}
 .set-filter-btn.active{outline:2px solid #704d20;background:linear-gradient(#f5e7c3,#d8bd80)}
 @media(max-width:720px){.set-filters{justify-content:flex-start}.set-filter-btn{min-width:82px}}
+
+/* POSTIT 1 — navigazione rapida e reset UP */
+.home-return{display:inline-block;margin:0 0 7px 2px;padding:5px 9px;border:1px solid #8e704c;border-radius:4px;background:rgba(239,225,194,.86);color:#4a3422;text-decoration:none;font:bold 12px Arial,Verdana,sans-serif;box-shadow:0 1px 3px rgba(0,0,0,.16)}
+.home-return:hover{background:#f8eccf}
+.reset-up-btn{height:29px!important;border:1px solid #6f4c29!important;background:linear-gradient(#6a3b20,#472512)!important;color:#ffe4ad!important;font:bold 11px Arial,Verdana,sans-serif!important;cursor:pointer;padding:0 10px!important}
+.reset-up-btn:hover{filter:brightness(1.12)}
+.quick-scroll{position:fixed;right:14px;width:39px;height:39px;border-radius:50%;border:2px solid #8b5d28;background:#4a240f;color:#ffe0a0;font:bold 23px/31px Arial,sans-serif;cursor:pointer;z-index:12000;box-shadow:0 3px 9px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .18s}
+.quick-scroll.show{opacity:.9;pointer-events:auto}.quick-scroll.down{top:14px}.quick-scroll.up{bottom:14px}
+@media(max-width:720px){.quick-scroll{right:7px;width:35px;height:35px;font-size:21px}.home-return{margin-left:0}}

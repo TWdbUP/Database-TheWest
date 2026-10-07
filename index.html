@@ -45,8 +45,9 @@
       border-radius: 8px;
       cursor: pointer;
       text-decoration: none;
-      transition: box-shadow .14s ease, background .14s ease;
+      transition: box-shadow .14s ease, background .14s ease, transform .14s ease;
       -webkit-tap-highlight-color: transparent;
+      z-index: 1;
     }
     .hotspot:hover,
     .hotspot:focus-visible {
@@ -58,7 +59,58 @@
       outline: none;
     }
 
-    /* Coordinate misurate sull'immagine originale 1536 x 1024. */
+    .hotspot.card {
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 10px;
+      color: #f5dfaf;
+      text-shadow: 0 2px 2px rgba(0,0,0,.95), 0 0 8px rgba(0,0,0,.6);
+      font-weight: 700;
+      font-size: clamp(17px, 1.45vw, 22px);
+      letter-spacing: .01em;
+      background: linear-gradient(#5a2f18, #31170b);
+      border: 2px solid rgba(194,145,75,.95);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,223,164,.18),
+        0 4px 10px rgba(0,0,0,.35);
+      z-index: 2;
+    }
+    .hotspot.card::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      top: 4px;
+      bottom: 38px;
+      border-radius: 7px;
+      background-color: #2d160d;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      box-shadow: inset 0 0 0 1px rgba(255,226,170,.08);
+    }
+    .hotspot.card > span {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hotspot.card:hover,
+    .hotspot.card:focus-visible {
+      transform: translateY(-1px);
+      background: linear-gradient(#66341a, #371b0d);
+      box-shadow:
+        inset 0 0 0 2px rgba(255,216,120,.85),
+        0 0 16px rgba(255,195,70,.55),
+        0 4px 10px rgba(0,0,0,.35);
+    }
+    .abiti.card::before    { background-image: url("assets/icon_abiti_rev4.png");    background-size: 108% auto; background-position: center 44%; }
+    .fucili.card::before   { background-image: url("assets/icon_fucili_rev4.png");   background-size: 122% auto; background-position: center 44%; }
+    .animali.card::before  { background-image: url("assets/icon_animali_rev4.png");  background-size: 112% auto; background-position: center 38%; }
+    .prodotti.card::before { background-image: url("assets/icon_prodotti_rev4.png"); background-size: 112% auto; background-position: center 42%; }
+
+    /* Coordinate misurate sull’immagine originale 1536 x 1024. */
     .copricapi { left:13.5417%; top:40.6250%; width:11.5885%; height:16.3086%; }
     .collane   { left:25.8464%; top:40.6250%; width:11.5885%; height:16.3086%; }
     .abiti     { left:38.2161%; top:40.6250%; width:10.9375%; height:16.3086%; }
@@ -72,6 +124,44 @@
 
     .animali  { left:34.8958%; top:73.9258%; width:14.5182%; height:16.6016%; }
     .prodotti { left:50.5859%; top:73.9258%; width:14.6484%; height:16.6016%; }
+
+    .set-launch {
+      left:66.4062%;
+      top:73.9258%;
+      width:14.6484%;
+      height:16.6016%;
+      position:absolute;
+      overflow:hidden;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding-bottom:10px;
+      color:#f8dda2;
+      text-decoration:none;
+      font-weight:700;
+      font-size:clamp(17px,1.45vw,22px);
+      letter-spacing:.01em;
+      background:linear-gradient(#5b2f15,#32170b);
+      border:2px solid rgba(194,145,75,.95);
+      border-radius:8px;
+      box-shadow:inset 0 0 0 1px rgba(255,223,164,.18),0 4px 10px rgba(0,0,0,.35);
+      text-shadow:0 2px 2px #000,0 0 8px rgba(0,0,0,.65);
+      z-index:3;
+    }
+    .set-launch::before {
+      content:"";
+      position:absolute;
+      left:4px;right:4px;top:4px;bottom:38px;
+      border-radius:7px;
+      background:#2d160d url("assets/icon_set_rev5.png") center 48% / 96% auto no-repeat;
+      box-shadow:inset 0 0 0 1px rgba(255,226,170,.08);
+    }
+    .set-launch:hover,.set-launch:focus-visible{
+      outline:none;
+      transform:translateY(-1px);
+      box-shadow:inset 0 0 0 3px rgba(255,216,120,.95),0 0 18px rgba(255,195,70,.65),0 5px 14px rgba(0,0,0,.48);
+    }
+    .set-launch .set-label{position:relative;z-index:1;pointer-events:none}
 
     .mobile-menu {
       display: none;
@@ -115,15 +205,16 @@
 
       <a class="hotspot copricapi" href="copricapi/" aria-label="Apri Copricapi" title="Copricapi"></a>
       <a class="hotspot collane" href="collane/" aria-label="Apri Collane" title="Collane"></a>
-      <a class="hotspot abiti" href="abiti/" aria-label="Apri Abiti" title="Abiti"></a>
+      <a class="hotspot abiti card" href="abiti/" aria-label="Apri Abiti" title="Abiti"><span>Abiti</span></a>
       <a class="hotspot cinture" href="cinture/" aria-label="Apri Cinture" title="Cinture"></a>
       <a class="hotspot pantaloni" href="pantaloni/" aria-label="Apri Pantaloni" title="Pantaloni"></a>
       <a class="hotspot scarpe" href="scarpe/" aria-label="Apri Scarpe" title="Scarpe"></a>
       <a class="hotspot armi-fuoco" href="armi_fuoco/" aria-label="Apri Armi fuoco" title="Armi fuoco"></a>
       <a class="hotspot armi-contusione" href="armi_contusione/" aria-label="Apri Armi contusione" title="Armi contusione"></a>
-      <a class="hotspot fucili" href="fucili/" aria-label="Apri Fucili" title="Fucili"></a>
-      <a class="hotspot animali" href="animali/" aria-label="Apri Animali" title="Animali"></a>
-      <a class="hotspot prodotti" href="prodotti/" aria-label="Apri Prodotti" title="Prodotti"></a>
+      <a class="hotspot fucili card" href="fucili/" aria-label="Apri Fucili" title="Fucili"><span>Fucili</span></a>
+      <a class="hotspot animali card" href="animali/" aria-label="Apri Animali" title="Animali"><span>Animali</span></a>
+      <a class="hotspot prodotti card" href="prodotti/" aria-label="Apri Prodotti" title="Prodotti"><span>Prodotti</span></a>
+      <a class="set-launch" href="set/" aria-label="Apri SET completi" title="SET completi"><span class="set-label">SET</span></a>
     </section>
 
     <nav class="mobile-menu" aria-label="Categorie TWdbUP per schermi piccoli">
@@ -132,7 +223,7 @@
       <a href="pantaloni/">Pantaloni</a><a href="scarpe/">Scarpe</a>
       <a href="armi_fuoco/">Armi fuoco</a><a href="armi_contusione/">Armi contusione</a>
       <a href="fucili/">Fucili</a><a href="animali/">Animali</a>
-      <a href="prodotti/">Prodotti</a>
+      <a href="prodotti/">Prodotti</a><a href="set/">SET</a>
     </nav>
   </main>
 </body>

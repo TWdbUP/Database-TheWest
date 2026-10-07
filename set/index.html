@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SET — TWdbUP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="document-wrapper">
+    <header class="wiki-title">
+      <a class="home-link" href="../">← Torna alla home</a>
+      <div class="title-center">
+        <h1>SET</h1>
+        <p class="subtitle">Riepilogo completo dei set e dei relativi bonus</p>
+      </div>
+      <div id="count" class="item-count"></div>
+    </header>
+
+    <section class="toolbar">
+      <label class="tool">
+        <span>Livello</span>
+        <input id="level" class="west" type="number" min="1" max="500" placeholder="Tuo livello">
+      </label>
+      <label class="tool search-tool">
+        <span>Cerca set</span>
+        <input id="search" class="west" type="search" placeholder="Es. Aponi, armi, Natale…">
+      </label>
+      <button id="resetUp" class="west-btn" type="button">Azzera tutti gli UP</button>
+    </section>
+
+    <section class="layout">
+      <aside class="set-browser">
+        <div id="resultCount" class="result-count"></div>
+        <div id="setList" class="set-list" aria-label="Elenco set"></div>
+      </aside>
+
+      <section id="detail" class="set-detail" aria-live="polite">
+        <div class="empty-state">Seleziona un set dall'elenco.</div>
+      </section>
+    </section>
+  </main>
+
+  <div id="popup_window" class="popup_window" aria-hidden="true"><div class="popup_front"></div><div id="popup_contents" class="popup_contents"></div></div>
+
+  <button id="goBottom" class="scroll-btn scroll-down" type="button" title="Vai a fondo pagina" aria-label="Vai a fondo pagina">↓</button>
+  <button id="goTop" class="scroll-btn scroll-up" type="button" title="Torna a inizio pagina" aria-label="Torna a inizio pagina">↑</button>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
