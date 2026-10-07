@@ -622,5 +622,15 @@ $('#compare_clear').addEventListener('click',()=>{
   compareOpen=false;
   render();
 });
+
+// POSTIT 1 — home, azzera UP e scorrimento rapido
+const __resetUp=document.querySelector('#resetUp');
+if(__resetUp)__resetUp.addEventListener('click',()=>{upgrades.clear();render();});
+const __goTop=document.querySelector('#goTop'),__goBottom=document.querySelector('#goBottom');
+if(__goTop)__goTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+if(__goBottom)__goBottom.addEventListener('click',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}));
+function __updateQuickScroll(){const y=window.scrollY,h=window.innerHeight,doc=document.documentElement.scrollHeight;if(__goTop)__goTop.classList.toggle('show',y>220);if(__goBottom)__goBottom.classList.toggle('show',y+h<doc-220)}
+window.addEventListener('scroll',__updateQuickScroll,{passive:true});window.addEventListener('resize',__updateQuickScroll);__updateQuickScroll();
+
 render();
 })();
