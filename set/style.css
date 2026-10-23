@@ -28,6 +28,7 @@ body{margin:0;background:#d8b879 url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .equipment-help{text-align:center;color:#705438;font-size:11px;margin-top:11px}
 
 /* Miglioramento direttamente sopra l'oggetto, uguale alle altre categorie TWdbUP. */
+/* Pulsanti UP sempre visibili, senza sprite esterni e senza hover obbligatorio. */
 .upgrade_controls{position:absolute;left:3px;top:4px;height:15px;display:flex;align-items:center;z-index:24;white-space:nowrap;pointer-events:none}
 .upgrade_controls .item_level{position:static;display:none;width:15px;height:12px;line-height:12px;background:transparent;text-align:center;font-size:12px;padding:0;margin:0 2px 0 0;color:#fff;box-shadow:none;border-radius:0;white-space:nowrap;z-index:1;pointer-events:none}
 .upgrade_controls .icon_level{display:block;width:15px;height:12px;background:url("https://westzz.innogamescdn.com/images/items/item_level.png") no-repeat;margin:0}
@@ -36,7 +37,7 @@ body{margin:0;background:#d8b879 url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .upgrade_controls .upgrade{background:url("https://wiki.the-west.net/images/c/ca/Upgrade_icons.png") 0 12px;margin:0 2px 0 1px}.upgrade_controls .upgrade:hover{background-position-y:0}
 .upgrade_controls .downgrade{background:url("https://wiki.the-west.net/images/c/ca/Upgrade_icons.png") 12px 12px;margin:0 2px}.upgrade_controls .downgrade:hover{background-position-y:0}
 .upgrade_controls[data-lvl]:not([data-lvl="0"]) .item_level,.upgrade_controls[data-lvl]:not([data-lvl="0"]) .upgrade_level_value{display:block}
-.game-item-box:hover .upgrade_controls .upgrade{display:inline-block}.game-item-box:hover .upgrade_controls[data-lvl]:not([data-lvl="0"]) .downgrade{display:inline-block}.upgrade_controls[data-lvl="0"] .item_level,.upgrade_controls[data-lvl="0"] .upgrade_level_value{display:none}
+.upgrade_controls .upgrade{display:inline-block}.upgrade_controls[data-lvl]:not([data-lvl="0"]) .downgrade{display:inline-block}.upgrade_controls[data-lvl="0"] .item_level,.upgrade_controls[data-lvl="0"] .upgrade_level_value{display:none}
 
 .bonus-table{display:flex;flex-direction:column;gap:7px}.bonus-row{display:grid;grid-template-columns:58px 1fr;border:1px solid #b68a50;background:#ebcf98;border-radius:5px;overflow:hidden}.bonus-threshold{display:grid;place-items:center;background:#4a220e;color:#ffe4ae;font-weight:bold;font-size:18px;padding:6px}.bonus-values{display:flex;flex-wrap:wrap;gap:5px;padding:6px}.bonus-chip{display:inline-flex;align-items:center;border:1px solid #a87d45;border-radius:4px;background:#f7e4b8;padding:3px 6px;font-size:13px;line-height:1.25}.bonus-row.active-threshold{outline:4px solid #ffd21a;outline-offset:2px;background:#fff0a9;box-shadow:0 0 0 2px #8d5a00,0 0 14px rgba(255,210,26,.78)}.bonus-row.active-threshold .bonus-threshold{background:linear-gradient(#ffe65d,#d89b00);color:#321700;text-shadow:0 1px 0 rgba(255,255,255,.45)}.bonus-row.active-threshold .bonus-chip{background:#fff6c8;border-color:#cf9d22}.bonus-row.unlocked{box-shadow:inset 0 0 0 999px rgba(255,237,176,.08)}
 .total-box{margin-top:12px;background:linear-gradient(#edd29d,#e1bf82);border:2px solid #93602e}.total-box h3{font-size:23px}.total-note{text-align:center;color:#6e4e32;font-size:13px;margin:-3px 0 10px}.total-values{display:flex;flex-wrap:wrap;justify-content:center;gap:7px}.total-chip{background:#4b260f;color:#ffe5b1;border:1px solid #9a6a31;border-radius:5px;padding:5px 8px;font-weight:bold}.total-empty{text-align:center;color:#795d3e;padding:9px}
@@ -70,3 +71,122 @@ body{margin:0;background:#d8b879 url("data:image/svg+xml,%3Csvg xmlns='http://ww
 @media(max-width:980px){.welcome-set-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.welcome-set-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.welcome-hero h2{font-size:28px}}
 @media(max-width:480px){.welcome-set-grid{grid-template-columns:1fr}.welcome-set-images{height:62px}}
+
+/* CATALOGO SET 20261020 — non modifica il layout della HOME né i calcoli dei bonus. */
+[hidden]{display:none!important}
+.catalog-view{padding:18px 20px 32px;min-height:400px}
+.detail-navigation{padding:13px 16px 2px;background:#ead3a5}
+.back-btn{height:40px;font-size:15px}
+.catalog-section{margin-top:25px}
+.catalog-title{text-align:center;font-size:25px;margin:0 0 6px;color:#572b15}
+.catalog-explain{text-align:center;font-size:14px;color:#705039;margin:0 auto 12px;max-width:900px}
+.catalog-status{text-align:center;font-size:13px;font-weight:bold;color:#634528;margin:8px 0 15px}
+.catalog-years{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:12px}
+.catalog-year{border:1px solid #9e713b;background:#e6c999;min-width:0;box-shadow:0 1px 4px rgba(74,37,18,.2);border-radius:5px;overflow:hidden}
+.catalog-year>summary{list-style:none;background:#3b1b0b;color:#ffe6b2;font:bold 21px Georgia,serif;padding:10px 13px;cursor:pointer}
+.catalog-year>summary::-webkit-details-marker{display:none}
+.catalog-year>summary:after{content:'▸';float:right;color:#f5ce8b}
+.catalog-year[open]>summary:after{content:'▾'}
+.catalog-year-total{margin-left:9px;font:normal 12px Georgia,serif;color:#ebc996}
+.catalog-year-events{padding:5px 8px 9px}
+.catalog-event-row{display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px;padding:6px 2px;border-bottom:1px solid #c4a472;align-items:start}
+.catalog-event-row:last-child{border-bottom:0}
+.catalog-event-heading{margin:2px 0 4px;font:600 12px Arial,sans-serif;color:#55321a}
+.catalog-event-badge{width:34px;height:36px;display:grid;place-items:center;align-self:start;margin-top:2px}
+.catalog-event-badge img{width:32px;height:34px;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 1px 1px #795330)}
+.catalog-event-badge .event-fallback{display:block;font:700 11px Georgia,serif;color:#69431c;text-align:center}
+.catalog-tiles{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start}
+.catalog-tile{position:relative;padding:3px;border:2px solid #634328;border-radius:6px;background:linear-gradient(130deg,#d8b583,#b39166);box-shadow:inset 0 0 0 1px #eddbb8,0 1px 2px #886e4b;cursor:pointer;width:62px;height:62px;display:grid;place-items:center}
+.catalog-tile:hover,.catalog-tile:focus-visible{outline:2px solid #ffdf54;outline-offset:0;background:#f8d88e;transform:translateY(-1px);z-index:2}
+.catalog-thumb{width:54px;height:54px;display:grid;place-items:center;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:0;overflow:hidden;border-radius:3px;background:rgba(82,48,23,.07)}
+.catalog-thumb img{object-fit:contain;width:100%;height:100%;min-width:0;min-height:0;filter:drop-shadow(0 0 1px rgba(0,0,0,.28))}
+.catalog-thumb img:only-child{grid-column:1/3;grid-row:1/3;width:100%;height:100%}
+.catalog-thumb img:nth-child(2):last-child{grid-row:1/3;height:90%;width:95%}
+.catalog-thumb img:first-child:nth-last-child(2){grid-row:1/3;height:90%;width:95%}
+.catalog-thumb img:nth-child(3):last-child{grid-column:1/3;justify-self:center;width:55%;height:100%}
+.catalog-tile .catalog-variant-count{position:absolute;bottom:0;right:1px;border-radius:3px;background:#4b240f;color:#ffe8b6;font:700 10px Arial,sans-serif;padding:1px 3px}
+.catalog-empty{text-align:center;background:#f6dfab;border:1px solid #b88b51;padding:22px;border-radius:6px}
+.catalog-unknown-note{font-size:12px;font-weight:normal;color:#e8c68a;margin-left:5px}
+.catalog-filter .west{min-width:118px;max-width:160px;font-size:14px}
+@media(max-width:1080px){.catalog-years{grid-template-columns:1fr}.catalog-view{padding:12px}.catalog-tiles{gap:5px}}
+@media(max-width:700px){.catalog-view{padding:9px}.catalog-year>summary{font-size:19px}.catalog-event-row{grid-template-columns:36px minmax(0,1fr)}.catalog-tile{width:59px;height:59px}.catalog-thumb{width:51px;height:51px}.toolbar{gap:8px}.catalog-filter .west{min-width:110px}.welcome-panel{padding:4px 0}}
+
+.detail-context{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:7px;color:#6b492b;font-size:14px;font-weight:bold}
+.detail-context img{width:23px;height:25px;object-fit:contain}
+
+/* Icone caratteristiche/abilità originali da sprite InnoGames. */
+.bonus-chip,.total-chip{display:inline-flex;align-items:center;gap:5px}
+.bonus-native-icon{position:relative;display:inline-block;vertical-align:middle;flex:none;width:20px;height:20px;overflow:hidden;border-radius:3px;background:#a78054;line-height:20px;text-align:center}
+.bonus-native-icon img{position:absolute;top:0;left:0;height:20px;z-index:2}
+.bonus-native-icon img[style*="left"]{top:0}
+.bonus-icon-fallback{position:absolute;inset:0;display:grid;place-items:center;color:#f9e8c6;font:bold 13px Arial,sans-serif;z-index:1}
+.sprite-strength{background:#9b2e28}.sprite-flexibility{background:#417c38}.sprite-dexterity{background:#306b9c}.sprite-charisma{background:#a58431}
+.bonus-icon-text{background:#6b4526;color:#ffe4ae;font:bold 15px/20px Georgia,serif}
+.total-chip .bonus-native-icon{border:1px solid #c99f61}
+
+.no-up-notice{margin:12px auto 4px;padding:8px 10px;max-width:380px;border:1px solid #9a7547;border-radius:5px;background:#f3e2bb;color:#684629;font:600 12px/1.35 Arial,sans-serif;text-align:center}
+
+/* TWdbUP UP VISIBILI — correzione generale display + risorse autonome 2026-10-20.
+   Solo CSS: non cambiare markup, calcoli, popup, disposizione degli oggetti.
+   I pulsanti nelle versioni vecchie avevano immagini vuote se wiki/CDN non rispondevano.
+   La freccia e' una piccola replica locale della freccia gialla classica. */
+.upgrade_controls .upgrade,
+.upgrade_controls .downgrade {
+  display:inline-block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:static !important;
+  width:14px !important;
+  height:14px !important;
+  flex:0 0 14px !important;
+  padding:0 !important;
+  border:0 !important;
+  box-shadow:none !important;
+  background-color:transparent !important;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M1.6%209.2%207.6%202.3%2014%209.3%2011.7%2012%207.6%207.5%203.8%2012Z%22%20stroke%3D%22%2345331b%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22%20fill%3D%22%23ead125%22%2F%3E%3Cpath%20d%3D%22M3.7%209%207.6%204.6%2011.6%209%22%20fill%3D%22none%22%20stroke%3D%22%23fff68b%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-position:center center !important;
+  background-size:14px 14px !important;
+  background-repeat:no-repeat !important;
+  cursor:pointer !important;
+  pointer-events:auto !important;
+}
+.upgrade_controls .downgrade {transform:rotate(180deg)}
+.upgrade_controls[data-lvl="0"] .downgrade {display:none !important}
+.upgrade_controls .upgrade:hover,
+.upgrade_controls .downgrade:hover {filter:brightness(1.13)}
+.upgrade_controls .upgrade::before,
+.upgrade_controls .downgrade::before {content:none !important}
+.upgrade_controls .item_level {display:none !important;} /* Niente seconda freccia decorativa: resta l'unico comando cliccabile e il numero UP. */
+.upgrade_controls .icon_level {
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M1.6%209.2%207.6%202.3%2014%209.3%2011.7%2012%207.6%207.5%203.8%2012Z%22%20stroke%3D%22%2345331b%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22%20fill%3D%22%23ead125%22%2F%3E%3Cpath%20d%3D%22M3.7%209%207.6%204.6%2011.6%209%22%20fill%3D%22none%22%20stroke%3D%22%23fff68b%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+  background-size:14px 14px !important;
+  display:block !important;
+}
+.upgrade_controls[data-lvl]:not([data-lvl="0"]) .upgrade_level_value {
+  display:block;
+  min-width:13px;
+  color:#fff;
+  text-shadow:-1px 0 1px #120903, 1px 0 1px #120903, 0 -1px 1px #120903, 0 1px 1px #120903;
+}
+
+/* PATCH SET 2026-10-21 — messaggio livello + riepilogo skill, zero modifiche UP */
+.total-level-warning{margin:10px auto 9px;max-width:850px;padding:9px 12px;text-align:center;background:#fff0c5;border:1px solid #9a682f;border-left:5px solid #9a4d1b;border-radius:5px;color:#593115;font:14px/1.4 Arial,sans-serif}
+.total-level-warning strong{font-weight:700}
+.total-level-warning button{margin-left:5px;background:#5c2b13;border:1px solid #a47436;border-radius:4px;color:#ffe6b2;padding:4px 9px;font:700 12px Arial,sans-serif;cursor:pointer}
+.total-level-warning button:hover{background:#7a3916}
+.total-skill-summary{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:6px 12px;margin:12px auto 2px;padding:10px 12px;max-width:900px;border-top:1px solid #ab7d42;color:#49270f;text-align:center;font:14px/1.45 Arial,sans-serif}
+.skill-summary-title{font-weight:700;background:#503018;color:#ffe5b3;padding:6px 11px;border-radius:5px;white-space:nowrap}
+.skill-summary-title strong{font-size:18px}
+.skill-summary-detail{font-size:13px}
+.skill-summary-help{flex-basis:100%;font-size:11px;color:#694f34}
+.bonus-icon-fallback{font-size:9px;letter-spacing:-.6px}
+
+/* Le due sezioni editoriali vanno una SOTTO l'altra, prima degli anni. */
+.catalog-years>.catalog-special{grid-column:1/-1}
+.catalog-special>summary{white-space:normal;line-height:1.25}
+.catalog-special .catalog-tiles{padding:7px 5px}
+
+/* Velocità base (proprietà nativa): separata dai bonus extra verdi. */
+.popup_base_speed{color:#a95118;font-weight:600;margin:8px 0 4px!important;padding-left:3px}

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>SET — TWdbUP</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../assets/twdbup-minihome.css">
 </head>
 <body>
   <main id="document-wrapper">
@@ -16,6 +17,21 @@
       </div>
       <div id="count" class="item-count"></div>
     </header>
+<nav class="twdbup-mini-nav" aria-label="Navigazione rapida tra le categorie TWdbUP">
+      <a class="twdbup-mini-link" href="../copricapi/" target="_blank" rel="noopener noreferrer" title="Apri Copricapi in una nuova scheda" aria-label="Apri Copricapi in una nuova scheda"><img src="../assets/home_v2/copricapi.png" alt="" loading="lazy"><span>Copricapi</span></a>
+      <a class="twdbup-mini-link" href="../collane/" target="_blank" rel="noopener noreferrer" title="Apri Collane in una nuova scheda" aria-label="Apri Collane in una nuova scheda"><img src="../assets/home_v2/collane.png" alt="" loading="lazy"><span>Collane</span></a>
+      <a class="twdbup-mini-link" href="../abiti/" target="_blank" rel="noopener noreferrer" title="Apri Abiti in una nuova scheda" aria-label="Apri Abiti in una nuova scheda"><img src="../assets/home_v2/abiti.png" alt="" loading="lazy"><span>Abiti</span></a>
+      <a class="twdbup-mini-link" href="../cinture/" target="_blank" rel="noopener noreferrer" title="Apri Cinture in una nuova scheda" aria-label="Apri Cinture in una nuova scheda"><img src="../assets/home_v2/cinture.png" alt="" loading="lazy"><span>Cinture</span></a>
+      <a class="twdbup-mini-link" href="../pantaloni/" target="_blank" rel="noopener noreferrer" title="Apri Pantaloni in una nuova scheda" aria-label="Apri Pantaloni in una nuova scheda"><img src="../assets/home_v2/pantaloni.png" alt="" loading="lazy"><span>Pantaloni</span></a>
+      <a class="twdbup-mini-link" href="../scarpe/" target="_blank" rel="noopener noreferrer" title="Apri Scarpe in una nuova scheda" aria-label="Apri Scarpe in una nuova scheda"><img src="../assets/home_v2/scarpe.png" alt="" loading="lazy"><span>Scarpe</span></a>
+      <a class="twdbup-mini-link" href="../armi_fuoco/" target="_blank" rel="noopener noreferrer" title="Apri Armi fuoco in una nuova scheda" aria-label="Apri Armi fuoco in una nuova scheda"><img src="../assets/home_v2/armi_fuoco.png" alt="" loading="lazy"><span>Armi fuoco</span></a>
+      <a class="twdbup-mini-link" href="../armi_contusione/" target="_blank" rel="noopener noreferrer" title="Apri Armi cont. in una nuova scheda" aria-label="Apri Armi cont. in una nuova scheda"><img src="../assets/home_v2/armi_contusione.png" alt="" loading="lazy"><span>Armi cont.</span></a>
+      <a class="twdbup-mini-link" href="../fucili/" target="_blank" rel="noopener noreferrer" title="Apri Fucili in una nuova scheda" aria-label="Apri Fucili in una nuova scheda"><img src="../assets/home_v2/fucili.png" alt="" loading="lazy"><span>Fucili</span></a>
+      <a class="twdbup-mini-link" href="../animali/" target="_blank" rel="noopener noreferrer" title="Apri Animali in una nuova scheda" aria-label="Apri Animali in una nuova scheda"><img src="../assets/home_v2/animali.png" alt="" loading="lazy"><span>Animali</span></a>
+      <a class="twdbup-mini-link" href="../prodotti/" target="_blank" rel="noopener noreferrer" title="Apri Prodotti in una nuova scheda" aria-label="Apri Prodotti in una nuova scheda"><img src="../assets/home_v2/prodotti.png" alt="" loading="lazy"><span>Prodotti</span></a>
+      <a class="twdbup-mini-link twdbup-mini-current" href="../set/" target="_blank" rel="noopener noreferrer" title="Apri SET in una nuova scheda" aria-label="Apri SET in una nuova scheda" aria-current="page"><img src="../assets/home_v2/set.png" alt="" loading="lazy"><span>SET</span></a>
+</nav>
+
 
     <section class="toolbar">
       <label class="tool">
@@ -23,12 +39,17 @@
         <input id="level" class="west" type="number" min="1" max="500" placeholder="Tuo livello">
       </label>
       <label class="tool search-tool">
-        <span>Cerca set</span>
-        <input id="search" class="west" type="search" placeholder="Es. Aponi, armi, Natale…">
+        <span>Cerca set (solo nome)</span>
+        <input id="search" class="west" type="search" placeholder="Es. Aponi, Hofer, Indipendenza…">
       </label>
+      <label class="tool catalog-filter"><span>Anno</span><select id="yearFilter" class="west" aria-label="Filtra per anno"><option value="">Tutti gli anni</option></select></label>
+      <label class="tool catalog-filter"><span>Evento</span><select id="eventFilter" class="west" aria-label="Filtra per evento"><option value="">Tutti gli eventi</option></select></label>
       <button id="resetUp" class="west-btn" type="button">Azzera tutti gli UP</button>
     </section>
 
+    <section id="catalogView" class="catalog-view" aria-label="Catalogo set per anno ed evento"></section>
+    <section id="detailView" class="detail-view" hidden>
+      <nav class="detail-navigation"><button id="backToCatalog" class="west-btn back-btn" type="button">← Torna all'elenco set</button></nav>
     <section class="layout">
       <aside class="set-browser">
         <div id="resultCount" class="result-count"></div>
@@ -39,6 +60,7 @@
         <div class="empty-state">Seleziona un set dall'elenco.</div>
       </section>
     </section>
+    </section>
   </main>
 
   <div id="popup_window" class="popup_window" aria-hidden="true"><div class="popup_front"></div><div id="popup_contents" class="popup_contents"></div></div>
@@ -47,6 +69,7 @@
   <button id="goTop" class="scroll-btn scroll-up" type="button" title="Torna a inizio pagina" aria-label="Torna a inizio pagina">↑</button>
 
   <script src="data.js"></script>
+  <script src="catalog.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

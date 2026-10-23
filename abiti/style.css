@@ -207,3 +207,57 @@ select.sort-mode:disabled{opacity:.55;cursor:default}
 .quick-scroll{position:fixed;right:14px;width:39px;height:39px;border-radius:50%;border:2px solid #8b5d28;background:#4a240f;color:#ffe0a0;font:bold 23px/31px Arial,sans-serif;cursor:pointer;z-index:12000;box-shadow:0 3px 9px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .18s}
 .quick-scroll.show{opacity:.9;pointer-events:auto}.quick-scroll.down{top:14px}.quick-scroll.up{bottom:14px}
 @media(max-width:720px){.quick-scroll{right:7px;width:35px;height:35px;font-size:21px}.home-return{margin-left:0}}
+
+/* TWdbUP UP VISIBILI — correzione generale display + risorse autonome 2026-10-20.
+   Solo CSS: non cambiare markup, calcoli, popup, disposizione degli oggetti.
+   I pulsanti nelle versioni vecchie avevano immagini vuote se wiki/CDN non rispondevano.
+   La freccia e' una piccola replica locale della freccia gialla classica. */
+.upgrade_controls .upgrade,
+.upgrade_controls .downgrade {
+  display:inline-block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:static !important;
+  width:14px !important;
+  height:14px !important;
+  flex:0 0 14px !important;
+  padding:0 !important;
+  border:0 !important;
+  box-shadow:none !important;
+  background-color:transparent !important;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M1.6%209.2%207.6%202.3%2014%209.3%2011.7%2012%207.6%207.5%203.8%2012Z%22%20stroke%3D%22%2345331b%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22%20fill%3D%22%23ead125%22%2F%3E%3Cpath%20d%3D%22M3.7%209%207.6%204.6%2011.6%209%22%20fill%3D%22none%22%20stroke%3D%22%23fff68b%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-position:center center !important;
+  background-size:14px 14px !important;
+  background-repeat:no-repeat !important;
+  cursor:pointer !important;
+  pointer-events:auto !important;
+}
+.upgrade_controls .downgrade {transform:rotate(180deg)}
+.upgrade_controls[data-lvl="0"] .downgrade {display:none !important}
+.upgrade_controls .upgrade:hover,
+.upgrade_controls .downgrade:hover {filter:brightness(1.13)}
+.upgrade_controls .upgrade::before,
+.upgrade_controls .downgrade::before {content:none !important}
+.upgrade_controls .item_level {display:none !important;} /* Niente seconda freccia decorativa: resta l'unico comando cliccabile e il numero UP. */
+.upgrade_controls .icon_level {
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M1.6%209.2%207.6%202.3%2014%209.3%2011.7%2012%207.6%207.5%203.8%2012Z%22%20stroke%3D%22%2345331b%22%20stroke-width%3D%221.8%22%20stroke-linejoin%3D%22round%22%20fill%3D%22%23ead125%22%2F%3E%3Cpath%20d%3D%22M3.7%209%207.6%204.6%2011.6%209%22%20fill%3D%22none%22%20stroke%3D%22%23fff68b%22%20stroke-width%3D%221.1%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-repeat:no-repeat !important;
+  background-position:center !important;
+  background-size:14px 14px !important;
+  display:block !important;
+}
+.upgrade_controls[data-lvl]:not([data-lvl="0"]) .upgrade_level_value {
+  display:block;
+  min-width:13px;
+  color:#fff;
+  text-shadow:-1px 0 1px #120903, 1px 0 1px #120903, 0 -1px 1px #120903, 0 1px 1px #120903;
+}
+
+/* Riepilogo skill per oggetto, identico criterio aritmetico alla pagina SET.
+   Non altera layout item, upgrade, tooltip nativi o formule preesistenti. */
+.popup-skill-summary{margin:7px 0 4px!important;padding:5px 6px;border-top:1px solid #b9a385;background:#f2e5c6;color:#5b371c;font-size:11px;line-height:1.3;text-align:center}
+.popup-skill-summary small{display:block;font-size:9px;color:#66513c}
+.popup-skill-summary.partial{font-size:10px;color:#81522b}
+
+/* Velocità base (proprietà nativa): separata dai bonus extra verdi. */
+.popup_base_speed{color:#a95118;font-weight:600;margin:8px 0 4px!important;padding-left:3px}

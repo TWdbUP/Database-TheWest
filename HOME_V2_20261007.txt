@@ -1,0 +1,10 @@
+HOME V2 - 07/10/2026
+
+Home ricostruita da zero nella struttura HTML/CSS:
+- nessun hotspot sovrapposto a pulsanti stampati nello sfondo;
+- header/saloon separato dal menu;
+- tutti i pulsanti sono veri elementi HTML cliccabili;
+- layout automatico: primi 6 pulsanti, poi righe da 3 centrate;
+- per aggiungere nuove categorie basta aggiungerle all'array in home.js;
+- hover applicato solo ai nuovi pulsanti;
+- pagina SET e tutte le categorie interne lasciate invariate.

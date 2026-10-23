@@ -1,6 +1,8 @@
 (() => {
 'use strict';
 const DB=window.TWDB_SET_DATA;
+const CATALOG=window.TWDB_SET_CATALOG;
+if(!CATALOG?.byKey) throw new Error('catalog.js SET non caricato');
 if(!DB) throw new Error('data.js SET non caricato');
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -11,6 +13,10 @@ const SKILLS=new Set(['build','punch','tough','endurance','health','ride','refle
 const LABELS={strength:'Forza',flexibility:'Agilità',dexterity:'Destrezza',charisma:'Carisma',build:'Costruzione',punch:'Vigore',tough:'Robustezza',endurance:'Energia',health:'Punti vita',ride:'Cavalcata',reflex:'Riflessi',dodge:'Schivata',hide:'Nascosto',swim:'Nuoto',aim:'Mira',shot:'Sparare',pitfall:'Trappole',finger_dexterity:'Precisione',repair:'Riparazione',leadership:'Comando',tactic:'Tattica',trade:'Negoziazione',animal:'Rapporto con gli animali',appearance:'Aspetto',experience:'Esperienza',dollar:'Soldi',luck:'Fortuna',regen:'Rigenerazione',drop:'Trova prodotti',speed:'Velocità',pray:'Prega',damage:'Danni'};
 const TYPE_LABEL={head:'Copricapo',neck:'Collana',body:'Abito',belt:'Cintura',pants:'Pantaloni',foot:'Scarpe',left_arm:'Fucile',right_arm:'Arma',animal:'Animale',yield:'Prodotto / sella'};
 let selectedKey='';
+let catalogScrollY=0;
+let openYears=new Set(['base','missions','2026','2025','2024']);
+const EVENTS=[['sale','CS / Premium'],['valentine','San Valentino'],['easter','Pasqua'],['independence','Indipendenza'],['oktoberfest','Oktoberfest'],['dotd','Giorno dei morti'],['xmas','Natale'],['other','Altri set']];
+const EVENT_LABEL=Object.fromEntries(EVENTS);
 let filtered=[];
 let active=new Set();
 let selectedByType=new Map();
@@ -93,6 +99,32 @@ function setEntryValue(e,level){
 function setMetrics(set,count,level){const out=new Map();for(const e of mergedSetEntries(set,count)){const inner=e.type==='character'?(e.bonus||{}):e;const value=setEntryValue(e,level);if(value!=null)addMetric(out,inner,value,e.desc||'','set')}return out}
 function thresholdMetrics(set,n,level){const out=[];for(const e of mergedSetEntries(set,n)){const inner=e.type==='character'?(e.bonus||{}):e;const value=setEntryValue(e,level);out.push({inner,label:metricLabel(inner,e.desc||''),value,desc:e.desc||''})}return out}
 function shownValue(inner,value){if(PERCENT.has(inner.type))return `${Math.round(Number(value)*100)}%`;return fmt(value,2)}
+// Sprites ufficiali del gioco (20 abilità e 4 attributi).
+// Mappa di sprite ricavata dal renderer TWDB ClothCalc; se il CDN non risponde
+// il testo rimane leggibile e l'icona possiede un simbolo di riserva.
+const SKILL_ROWS={
+ strength:['build','punch','tough','endurance','health'],
+ flexibility:['ride','reflex','dodge','hide','swim'],
+ dexterity:['aim','shot','pitfall','finger_dexterity','repair'],
+ charisma:['leadership','tactic','trade','animal','appearance']
+};
+const ICON_CDN='https://westit.innogamescdn.com';
+const ICON_FALLBACK={strength:'Fo',flexibility:'Ag',dexterity:'De',charisma:'Ca',build:'Cos',punch:'Vig',tough:'Rob',endurance:'Ene',health:'PV',ride:'Cav',reflex:'Rif',dodge:'Sch',hide:'Nas',swim:'Nuo',aim:'Mir',shot:'Spa',pitfall:'Tra',finger_dexterity:'Pre',repair:'Rip',leadership:'Com',tactic:'Tat',trade:'Neg',animal:'Ani',appearance:'Asp'};
+function bonusIcon(inner){
+ if(!inner)return'';
+ const nm=inner.name||'';
+ if(inner.type==='attribute'&&ATTRS.has(nm)){
+  const url=ICON_CDN+'/images/window/skills/circle_'+nm+'.png';
+  return `<span class="bonus-native-icon" title="${esc(LABELS[nm]||nm)}"><img loading="lazy" src="${url}" alt="" onerror="this.style.display='none'"><span class="bonus-icon-fallback" aria-hidden="true">${esc(ICON_FALLBACK[nm]||'?')}</span></span>`;
+ }
+ if(inner.type==='skill'&&SKILLS.has(nm)){
+  const family=Object.keys(SKILL_ROWS).find(k=>SKILL_ROWS[k].includes(nm));
+  const pos=SKILL_ROWS[family].indexOf(nm),url=ICON_CDN+'/images/skill/skills_'+family+'.png';
+  return `<span class="bonus-native-icon sprite-${family}" title="${esc(LABELS[nm]||nm)}"><img loading="lazy" src="${url}" alt="" style="height:40px;max-width:none;left:-${pos*20}px" onerror="this.style.display='none'"><span class="bonus-icon-fallback" aria-hidden="true">${esc(ICON_FALLBACK[nm]||'?')}</span></span>`;
+ }
+ const x={experience:'★',dollar:'$',luck:'♣',regen:'♥',drop:'◆',speed:'➜',job:'⚒',fortbattle:'⚔',pray:'✝',damage:'⚔'}[inner.type];
+ return x?`<span class="bonus-native-icon bonus-icon-text" aria-hidden="true">${x}</span>`:'';
+}
 function metricSort(a,b){
  const order=['attribute','skill','experience','dollar','luck','regen','drop','speed','job','fortbattle','pray','damage'];
  const ai=order.indexOf(a.inner.type),bi=order.indexOf(b.inner.type);if(ai!==bi)return (ai<0?99:ai)-(bi<0?99:bi);return a.label.localeCompare(b.label,'it');
@@ -135,18 +167,55 @@ function initActive(set){
     selectedByType.set(type,id); active.add(id);
   }
 }
-function renderList(){
-  const q=$('#search').value.trim().toLocaleLowerCase('it');
-  filtered=DB.sets.filter(s=>!q||s.name.toLocaleLowerCase('it').includes(q)||s.key.toLowerCase().includes(q));
-  $('#resultCount').textContent=`${filtered.length} / ${DB.sets.length} set`;
-  $('#count').textContent=`${DB.sets.length} set · ${DB.meta.unique_item_count} oggetti collegati`;
-  $('#setList').innerHTML=filtered.map(s=>{
-    const slots=slotCount(s),alts=Math.max(0,s.items.length-slots);
-    return `<button class="set-row${s.key===selectedKey?' active':''}" data-key="${esc(s.key)}"><b>${esc(s.name)}</b><small>${slots} pezzi${alts?` · ${alts} alternative`:''} · bonus ${s.bonusThresholds.length?s.bonusThresholds.join('/'): '—'} pz</small></button>`;
-  }).join('');
-  for(const b of document.querySelectorAll('.set-row'))b.addEventListener('click',()=>selectSet(b.dataset.key));
+function classification(set){return CATALOG.byKey[set.key]||{year:null,event:null,source:'non classificato'}}
+// Curatione editoriale richiesta: spostiamo SOLO gli ID elencati qui.
+// Le denominazioni wiki non sempre coincidono con il nome nativo del database.
+const CURATED_BASE_KEYS = new Set(["greenhorn_set", "set_farmer", "set_mexican", "set_pilgrim_male", "set_pilgrim_female", "set_gentleman", "set_dancer", "set_sleeper", "set_quackery", "fireworker_set", "set_indian", "collector_set", "gold_set", "2018_doldenset", "tw_times_set", "wooden_magician_set", "bunny_set", "set_veteran_2017_1", "set_shop_low", "set_shop_mid", "set_shop_high", "set_shop_adventure", "set_shop_duel", "set_shop_work", "set_shop_soldier", "set_cupid", "instance_set_1", "set_veteran_horse", "2018_10th_set_1", "set_fair_2017_clothes", "2017_ifbc_clothes", "set_speedworld_2014", "set_fair", "set_soap", "community_events_set", "gold_rush_clothes", "2018_achievement_set", "ifbc2020_set-1", "creative_set", "fan_collector_set", "easter_chick_set_1", "easter_hare_set_1", "easter_sheep_set_1", "legendary_set_2", "malachite_set_1", "green_set_2021", "fancy_set_2021", "unique_rare_set", "harvets_2021_set_1", "15_b_day_set"]);
+const CURATED_MISSION_KEYS = new Set(["set_party", "season_set", "set_st_patrick", "set_walker", "set_halloween", "set_parade", "labor_day", "set_carnival_2018_1", "2018_soccer_event", "independence_day_2019_set_12", "community_event_2020_march", "eire_set_1", "oktoberfest_2024_set_1"]);
+const CURATED_LABELS = {base:'Set Base, Set Omaggio, Set premi eventi extra',missions:'Set da missioni di gioco'};
+function curatedGroup(set){if(CURATED_BASE_KEYS.has(set.key))return 'base';if(CURATED_MISSION_KEYS.has(set.key))return 'missions';return null}
+function catalogYearGroup(set){return curatedGroup(set)|| (classification(set).year?String(classification(set).year):'unknown')}
+
+function normalizeSearch(value){return String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('it').trim()}
+function matchingSets(){
+ const q=normalizeSearch($('#search').value);
+ const year=$('#yearFilter').value,event=$('#eventFilter').value;
+ return DB.sets.filter(s=>{
+  const c=classification(s);
+  return (!q||normalizeSearch(s.name).includes(q))&&
+    (!year||catalogYearGroup(s)===year)&&
+    (!event||(event==='other'?!c.event:c.event===event));
+ });
 }
-function selectSet(key){selectedKey=key;const s=currentSet();if(!s)return;initActive(s);renderList();renderDetail();}
+function renderList(){
+ filtered=matchingSets();
+ $('#resultCount').textContent=`${filtered.length} / ${DB.sets.length} set`;
+ $('#count').textContent=`${DB.sets.length} set · ${DB.meta.unique_item_count} oggetti collegati`;
+ $('#setList').innerHTML=filtered.map(s=>{
+  const slots=slotCount(s),alts=Math.max(0,s.items.length-slots);
+  return `<button type="button" class="set-row${s.key===selectedKey?' active':''}" data-key="${esc(s.key)}"><b>${esc(s.name)}</b><small>${slots} pezzi${alts?` · ${alts} alternative`:''} · bonus ${s.bonusThresholds.length?s.bonusThresholds.join('/'): '—'} pz</small></button>`;
+ }).join('');
+ for(const b of document.querySelectorAll('.set-row'))b.addEventListener('click',()=>selectSet(b.dataset.key));
+}
+function showDetailView(){ $('#catalogView').hidden=true; $('#detailView').hidden=false; }
+function showCatalogView({updateHistory=true,restoreScroll=true}={}){
+ hidePopup();
+ $('#detailView').hidden=true;
+ $('#catalogView').hidden=false;
+ if(updateHistory&&location.hash!=='#catalogo')history.pushState({view:'catalog'},'', '#catalogo');
+ renderWelcome();
+ if(restoreScroll)requestAnimationFrame(()=>window.scrollTo({top:catalogScrollY,behavior:'instant'}));
+ else window.scrollTo({top:0,behavior:'instant'});
+}
+function selectSet(key,{updateHistory=true}={}){
+ const s=DB.sets.find(x=>x.key===key);if(!s)return;
+ if(!$('#catalogView').hidden)catalogScrollY=window.scrollY;
+ if(selectedKey!==key)initActive(s);
+ selectedKey=key;
+ if(updateHistory)history.pushState({view:'set',key},'', '#set='+encodeURIComponent(key));
+ showDetailView();renderList();renderDetail();
+ window.scrollTo({top:0,behavior:'instant'});
+}
 function toggleSlot(type){
   const set=currentSet();if(!set)return;
   const id=selectedIdForType(set,type);if(id==null)return;
@@ -176,6 +245,9 @@ function totalMetrics(set){
   }
   for(const m of setMetrics(set,wornCount(set),level).values())addMetric(out,m.inner,m.value,m.label,'set');
   return [...out.values()].sort(metricSort);
+}
+function levelMissingNote(){
+  return `<div class="total-level-warning" role="status"><strong>Totale parziale: manca il livello del personaggio.</strong> Attributi e abilita per livello non sono ancora conteggiati. <button type="button" id="focusCharacterLevel">Inserisci il livello</button> per calcolarli.</div>`;
 }
 function upgradeOverlay(it,id){
   if(!it?.upgradeable)return'';
@@ -214,7 +286,16 @@ function popupEntryHtml(entry,up,level){
   }else{
     value=itemBonusValue(entry,up);
   }
-  if(value==null && entry.type==='character' && !level)return `<p class="popup_bonus">${esc(entry.desc||'Bonus per livello')}</p>`;
+  if(value==null && entry.type==='character' && !level){
+    if(entry.key==='level' && typeof inner.value==='number'){
+      const coeff=itemBonusValue(inner,up);
+      const shown=PERCENT.has(inner.type)?`${fmt(coeff*100,4)}%`:fmt(coeff,5);
+      const desc=String(entry.desc||`+ ${shown} ${metricLabel(inner)} (per Livello)`);
+      const updated=desc.replace(/^\s*\+\s*[-+]?\d+(?:[.,]\d+)?%?/,`+${shown}`);
+      return `<p class="popup_bonus">${esc(updated)}</p>`;
+    }
+    return `<p class="popup_bonus">${esc(entry.desc||'Bonus per livello')}</p>`;
+  }
   const label=metricLabel(inner,entry.desc||'');
   const shown=PERCENT.has(inner.type)?`${Math.round(Number(value)*100)}%`:fmt(value,2);
   return `<p class="popup_bonus">+ ${shown} ${esc(label)}</p>`;
@@ -229,7 +310,7 @@ function popupHtml(it){
   for(const [k,v] of Object.entries(b.attributes||{}))if(v)h+=`<p class="bonus_attr">+ ${fmt(v,2)} ${esc(LABELS[k]||k)}</p>`;
   for(const [k,v] of Object.entries(b.skills||{}))if(v)h+=`<p class="bonus_skill">+ ${fmt(v,2)} ${esc(LABELS[k]||k)}</p>`;
   for(const e of (it.bonus?.item||[]))h+=popupEntryHtml(e,up,level);
-  const tsp=travelSpeedPercent(it,up);if(tsp)h+=`<p class="popup_bonus">+ ${fmt(tsp,2)}% Velocità</p>`;
+  const tsp=travelSpeedPercent(it,up);if(tsp)h+=`<p class="popup_base_speed">Velocità: +${fmt(tsp,2)}%</p>`;
   const fb=b.fortbattle||{};for(const k of ['defense','offense','resistance'])if(fb[k])h+=`<p class="bonus_fort">+ ${fmt(fb[k],2)} ${esc({defense:'Difesa',offense:'Attacco',resistance:'Resistenza'}[k])} (Bonus battaglia per il forte)</p>`;
   const fs=b.fortbattlesector||{};for(const k of ['defense','offense','damage'])if(fs[k])h+=`<p class="bonus_fort">+ ${fmt(fs[k],2)} ${esc({defense:'Difesa',offense:'Attacco',damage:'Danni'}[k])} (Bonus settore battaglia per il forte)</p>`;
   const set=currentSet();if(set)h+=`<p class="popup_set">${esc(set.name)}</p>`;
@@ -272,6 +353,49 @@ function renderEquipment(set){
   </div>`;
 }
 
+function setPreview(set){
+  // Miniatura composita, esclusiva del set, ricavata dalle sue immagini native.
+  const shown=(set.items||[]).map(id=>itemOf(id)).filter(Boolean).slice(0,3);
+  return `<span class="catalog-thumb" aria-hidden="true">${shown.map(it=>`<img loading="lazy" src="${esc(it.image||'')}" alt="">`).join('')}</span>`;
+}
+function tileHtml(set){
+  return `<button type="button" class="catalog-tile" data-open-set="${esc(set.key)}" title="${esc(set.name)}" aria-label="Apri scheda: ${esc(set.name)}">${setPreview(set)}</button>`;
+}
+function renderCatalogHtml(){
+ const matches=matchingSets();
+ const groups=new Map();
+ for(const s of matches){
+  const c=classification(s),y=catalogYearGroup(s),e=curatedGroup(s)?'curated':(c.event||'other');
+  if(!groups.has(y))groups.set(y,new Map());
+  const g=groups.get(y);if(!g.has(e))g.set(e,[]);g.get(e).push(s);
+ }
+ const years=[...groups.keys()].sort((a,b)=>{
+  const order={'base':0,'missions':1};
+  if(a in order||b in order)return (order[a]??100)-(order[b]??100);
+  if(a==='unknown')return 1;if(b==='unknown')return -1;
+  return Number(b)-Number(a);
+ });
+ const filteredView=Boolean($('#search').value.trim()||$('#yearFilter').value||$('#eventFilter').value);
+ const sections=years.map(y=>{
+   const gg=groups.get(y),n=[...gg.values()].reduce((a,g)=>a+g.length,0);
+   const custom=y==='base'||y==='missions';
+   let inner;
+   if(custom){
+     const sets=gg.get('curated')||[];
+     inner=`<div class="catalog-curated-tiles catalog-tiles">${sets.map(tileHtml).join('')}</div>`;
+   }else{
+     inner=EVENTS.filter(([e])=>gg.has(e)).map(([e,label])=>{
+       const sets=gg.get(e);
+       const image=e==='other'?'':`<img src="assets/events/${e}.png" alt="">`;
+       return `<section class="catalog-event-row" aria-label="${esc(label)}"><div class="catalog-event-badge">${image||'<span class="event-fallback">ALTRO</span>'}</div><div><div class="catalog-event-heading">${esc(label)} · ${sets.length} set</div><div class="catalog-tiles">${sets.map(tileHtml).join('')}</div></div></section>`;
+     }).join('');
+   }
+   const label=CURATED_LABELS[y]|| (y==='unknown'?'Anno non determinato':y);
+   const note=y==='unknown'?'<span class="catalog-unknown-note">senza attribuzione certa</span>':'';
+   return `<details class="catalog-year${custom?' catalog-special':''}" data-year="${esc(y)}"${filteredView||openYears.has(y)?' open':''}><summary>${esc(label)}<span class="catalog-year-total">${n} set</span>${note}</summary><div class="catalog-year-events">${inner}</div></details>`;
+ }).join('');
+ return `<h2 class="catalog-title">Catalogo SET per anno ed evento</h2><p class="catalog-explain">Clicca l’icona di un set per aprire la scheda completa. Le sezioni speciali raccolgono soltanto i set indicati; le altre classificazioni e gli ultimi set inseriti restano invariati.</p><div class="catalog-status">${matches.length} / ${DB.sets.length} set · anni dal 2012 al 2026 · eventi originali</div>${sections?`<div class="catalog-years">${sections}</div>`:'<p class="catalog-empty">Nessun set corrisponde ai filtri selezionati.</p>'}`;
+}
 function renderWelcome(){
   hidePopup();
   const latestKeys=[
@@ -283,15 +407,16 @@ function renderWelcome(){
   ];
   const featured=latestKeys.map(key=>DB.sets.find(s=>s.key===key)).filter(Boolean);
   const cards=featured.map(s=>{
-    const imgs=(s.items||[]).slice(0,3).map(id=>itemOf(id)).filter(Boolean).map(it=>`<img src="${esc(it.image||'')}" alt="">`).join('');
-    return `<button class="welcome-set-card" type="button" data-welcome-key="${esc(s.key)}"><span class="welcome-set-images">${imgs}</span><b>${esc(s.name)}</b><small>${slotCount(s)} pezzi · bonus ${s.bonusThresholds.join('/')} pz</small></button>`;
+    const imgs=(s.items||[]).slice(0,3).map(id=>itemOf(id)).filter(Boolean).map(it=>`<img loading="lazy" src="${esc(it.image||'')}" alt="">`).join('');
+    return `<button class="welcome-set-card" type="button" data-open-set="${esc(s.key)}"><span class="welcome-set-images">${imgs}</span><b>${esc(s.name)}</b><small>${slotCount(s)} pezzi · bonus ${s.bonusThresholds.join('/')} pz</small></button>`;
   }).join('');
-  $('#detail').innerHTML=`
-    <section class="welcome-panel">
+  const hasFilters=Boolean($('#search').value.trim()||$('#yearFilter').value||$('#eventFilter').value);
+  $('#catalogView').innerHTML=`
+    <section class="welcome-panel" ${hasFilters?'hidden':''}>
       <div class="welcome-hero">
         <div class="welcome-kicker">SEZIONE SET</div>
         <h2>Scegli il set che vuoi consultare</h2>
-        <p>Usa <b>Cerca set</b> oppure seleziona un nome nell'elenco a sinistra. La scheda mostrerà oggetti, alternative, UP, bonus set e totale calcolato.</p>
+        <p>Usa <b>Cerca set</b> (solo nome), filtra per anno/evento oppure scegli un’icona nel catalogo. La scheda mostrerà oggetti, alternative, UP, bonus set e totale calcolato.</p>
         <div class="welcome-stats"><span><b>${DB.sets.length}</b> set</span><span><b>${DB.meta.unique_item_count}</b> oggetti collegati</span></div>
       </div>
       <div class="welcome-legend">
@@ -299,43 +424,83 @@ function renderWelcome(){
       </div>
       <h3 class="welcome-subtitle">Ultimi set inseriti</h3>
       <div class="welcome-set-grid">${cards}</div>
-    </section>`;
-  for(const b of document.querySelectorAll('[data-welcome-key]'))b.addEventListener('click',()=>selectSet(b.dataset.welcomeKey));
+    </section>
+    <section class="catalog-section">${renderCatalogHtml()}</section>`;
+  for(const el of document.querySelectorAll('.catalog-year')){
+    el.addEventListener('toggle',()=>{
+      // Non cambiare preferenze quando i dettagli sono ricreati per un filtro.
+      if($('#search').value.trim()||$('#yearFilter').value||$('#eventFilter').value)return;
+      if(el.open)openYears.add(el.dataset.year);else openYears.delete(el.dataset.year);
+    });
+  }
 }
 function renderDetail(){
   hidePopup();
-  const set=currentSet();if(!set){renderWelcome();return}
+  const set=currentSet();if(!set){showCatalogView({updateHistory:false});return}
   const level=characterLevel(),count=wornCount(set),thresholds=Object.keys(set.bonus||{}).map(Number).sort((a,b)=>a-b);
+  const meta=classification(set);
+  const hasUpgradableItems=(set.items||[]).some(id=>itemOf(id)?.upgradeable);
+  const upgradeMessage=hasUpgradableItems?'':`<div class="no-up-notice">Gli oggetti di questo set non sono migliorabili: per questo i pulsanti UP non compaiono.</div>`;
+  const eventName=EVENT_LABEL[meta.event]||'Evento non determinato';
+  const detailEventIcon=meta.event?`<img src="assets/events/${esc(meta.event)}.png" alt="">`:'';
+  const groupName=CURATED_LABELS[curatedGroup(set)]||null;
+  const contextText=[groupName,meta.year||'Anno non determinato',eventName].filter(Boolean).join(' · ');
   const activeThreshold=Math.max(0,...thresholds.filter(n=>n<=count));
   const bonusRows=thresholds.length?thresholds.map(n=>{
     const vals=thresholdMetrics(set,n,level);
-    return `<div class="bonus-row${n===activeThreshold?' active-threshold':''}${n<=count?' unlocked':''}"><div class="bonus-threshold">${n}Pz</div><div class="bonus-values">${vals.map(x=>`<span class="bonus-chip">${x.value==null?esc(x.desc||x.label):`+${shownValue(x.inner,x.value)} ${esc(x.label)}`}</span>`).join('')||'<span class="bonus-chip">Nessun bonus</span>'}</div></div>`;
+    return `<div class="bonus-row${n===activeThreshold?' active-threshold':''}${n<=count?' unlocked':''}"><div class="bonus-threshold">${n}Pz</div><div class="bonus-values">${vals.map(x=>`<span class="bonus-chip">${bonusIcon(x.inner)}${x.value==null?esc(x.desc||x.label):`+${shownValue(x.inner,x.value)} ${esc(x.label)}`}</span>`).join('')||'<span class="bonus-chip">Nessun bonus</span>'}</div></div>`;
   }).join(''):'<div class="total-empty">Questo set non ha soglie bonus.</div>';
   const totals=totalMetrics(set);
   $('#detail').innerHTML=`
     <div class="detail-head">
       <h2>${esc(set.name)}</h2>
+      <div class="detail-context">${detailEventIcon}<span>${esc(contextText)}</span></div>
       <div class="piece-counter">Pezzi attivi: ${count}${activeThreshold?` · bonus fino a ${activeThreshold}Pz`:''}</div>
     </div>
-    <div class="box total-box"><h3>Totale</h3><div class="total-note">Bonus degli oggetti attivi + bonus set cumulativo. Cambiare alternativa o UP modifica il totale, non la tabella Bonus set.</div><div class="total-values">${totals.length?totals.map(m=>`<span class="total-chip">+${shownValue(m.inner,m.value)} ${esc(m.label)}</span>`).join(''):`<div class="total-empty">${level?'Nessun bonus numerico':'Inserisci il livello per calcolare i bonus “per livello”.'}</div>`}</div></div>
+    <div class="box total-box"><h3>Totale</h3><div class="total-note">Bonus degli oggetti attivi + bonus set cumulativo. Cambiare alternativa o UP modifica il totale, non la tabella Bonus set.</div>${level?'':levelMissingNote()}<div class="total-values">${totals.length?totals.map(m=>`<span class="total-chip">${bonusIcon(m.inner)}+${shownValue(m.inner,m.value)} ${esc(m.label)}</span>`).join(''):`<div class="total-empty">${level?'Nessun bonus numerico':'Inserisci il livello per calcolare i bonus “per livello”.'}</div>`}</div></div>
     <div class="detail-grid">
-      <div class="box equipment-box"><h3>Oggetti del set</h3>${renderEquipment(set)}<div class="equipment-help">↻ cambia alternativa · +/− sull'oggetto cambia UP · ✓/× include o esclude dal totale</div></div>
+      <div class="box equipment-box"><h3>Oggetti del set</h3>${renderEquipment(set)}${upgradeMessage}<div class="equipment-help"><b>UP:</b> usa i pulsanti −/+, sempre visibili sui pezzi migliorabili (UP0–UP5). Gli oggetti non migliorabili non li mostrano. · ↻ alternativa · ✓/× include/esclude.</div></div>
       <div class="box"><h3>Bonus set</h3><div class="bonus-table">${bonusRows}</div></div>
     </div>`;
   for(const b of document.querySelectorAll('[data-toggle-type]'))b.addEventListener('click',ev=>{ev.stopPropagation();toggleSlot(b.dataset.toggleType)});
   for(const b of document.querySelectorAll('[data-cycle]'))b.addEventListener('click',ev=>{ev.stopPropagation();cycleVariant(b.dataset.cycle)});
   for(const b of document.querySelectorAll('.upgrade-step'))b.addEventListener('click',ev=>{ev.stopPropagation();changeUp(Number(b.dataset.upId),Number(b.dataset.upDelta))});
+  const focusButton=$('#focusCharacterLevel');
+  if(focusButton)focusButton.addEventListener('click',()=>{ const f=$('#level');f.focus();f.scrollIntoView({block:'center',behavior:'smooth'});});
   bindItemPopups();
 }
 
-$('#search').addEventListener('input',renderList);
-$('#level').addEventListener('input',renderDetail);
+function updateFilters(){renderList();if(!$('#catalogView').hidden)renderWelcome();}
+$('#search').addEventListener('input',updateFilters);
+$('#yearFilter').addEventListener('change',updateFilters);
+$('#eventFilter').addEventListener('change',updateFilters);
+$('#catalogView').addEventListener('click',ev=>{const button=ev.target.closest('[data-open-set]');if(button)selectSet(button.dataset.openSet)});
+$('#backToCatalog').addEventListener('click',()=>showCatalogView());
+for(const key of ['base','missions']){const opt=document.createElement('option');opt.value=key;opt.textContent=CURATED_LABELS[key];$('#yearFilter').appendChild(opt)}
+for(const year of [...new Set(DB.sets.filter(s=>!curatedGroup(s)).map(s=>classification(s).year).filter(Boolean))].sort((a,b)=>b-a)){
+ const opt=document.createElement('option');opt.value=String(year);opt.textContent=String(year);$('#yearFilter').appendChild(opt);
+}
+{const opt=document.createElement('option');opt.value='unknown';opt.textContent='Anno non determinato';$('#yearFilter').appendChild(opt)}
+for(const [event,label] of EVENTS){const opt=document.createElement('option');opt.value=event;opt.textContent=label;$('#eventFilter').appendChild(opt)}
+window.addEventListener('popstate',()=>{
+ const hash=decodeURIComponent(location.hash);
+ if(hash.startsWith('#set='))selectSet(hash.slice(5),{updateHistory:false});
+ else showCatalogView({updateHistory:false,restoreScroll:true});
+});
+// Il livello e' facoltativo e viene chiesto solo per un totale calcolato.
+// Non viene ripristinato da una visita precedente.
+$('#level').value='';
+$('#level').addEventListener('input',()=>{if(!$('#detailView').hidden)renderDetail();});
 $('#resetUp').addEventListener('click',()=>{upgrades.clear();renderDetail()});
 $('#goTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 $('#goBottom').addEventListener('click',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}));
 function updateScrollButtons(){const y=window.scrollY,h=window.innerHeight,doc=document.documentElement.scrollHeight;$('#goTop').classList.toggle('show',y>250);$('#goBottom').classList.toggle('show',y+h<doc-250)}
 window.addEventListener('scroll',updateScrollButtons,{passive:true});window.addEventListener('resize',updateScrollButtons);
 renderList();
-renderWelcome();
+{const initialHash=decodeURIComponent(location.hash);
+ if(initialHash.startsWith('#set=')&&DB.sets.some(s=>s.key===initialHash.slice(5))){
+   selectSet(initialHash.slice(5),{updateHistory:false});
+ }else{showCatalogView({updateHistory:false,restoreScroll:false})}
+}
 updateScrollButtons();
 })();

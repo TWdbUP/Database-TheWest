@@ -165,6 +165,13 @@ function entryHtml(entry,item,up,level){
   else if(inner.type==='fortbattle') cls='bonus_fort';
 
   if(value==null && entry.type==='character' && !level){
+    if(entry.key==='level' && typeof inner.value==='number'){
+      const coeff=itemBonusValue(inner,up);
+      const shown=PERCENT.has(inner.type)?`${fmt(coeff*100,4)}%`:fmt(coeff,5);
+      const desc=String(entry.desc||`+ ${shown} ${LABELS[inner.name]||inner.name||inner.type} (per Livello)`);
+      const updated=desc.replace(/^\s*\+\s*[-+]?\d+(?:[.,]\d+)?%?/,`+${shown}`);
+      return `<p class="${cls}">${esc(updated)}</p>`;
+    }
     return `<p class="${cls}">${esc(entry.desc||'Bonus per livello')}</p>`;
   }
 
@@ -224,6 +231,7 @@ function metric(item,key){
   }
   return total;
 }
+
 function popupHtml(item){
   const up=getUp(item), level=characterLevel();
   const b=effectiveDirectBonus(item,up);
@@ -238,12 +246,17 @@ function popupHtml(item){
     if(v) h+=`<p class="bonus_skill${v<0?' bonus_negative':''}">${v>=0?'+ ':''}${fmt(v)} ${esc(LABELS[k]||k)}</p>`;
   }
 
-  // bonus item strutturati
-  for(const e of (item.bonus?.item||[])) h+=entryHtml(e,item,up,level);
+  // Bonus danni per livello già incorporato nell’intervallo dei danni: non ripetere.
+  // Senza livello, il coefficiente resta visibile in popup.
+  for(const e of (item.bonus?.item||[])){
+    if(level && wd && e?.type==='character' && e?.key==='level' && e?.bonus?.type==='damage') continue;
+    h+=entryHtml(e,item,up,level);
+  }
+
 
   // speed come proprietà nativa dell'item
   const tsp=travelSpeedPercent(item,up);
-  if(tsp) h+=`<p class="bonus_misc">+ ${fmt(tsp)}% Velocità</p>`;
+  if(tsp) h+=`<p class="popup_base_speed">Velocità: +${fmt(tsp)}%</p>`;
 
   const fb=b.fortbattle||{};
   if(fb.defense) h+=`<p class="bonus_fort">+ ${fmt(fb.defense)} Difesa (Bonus battaglia per il forte)</p>`;
@@ -481,6 +494,7 @@ function renderCompare(){
     }
     html+=`</tr><tr class="compare_label_row"><td colspan="${cols}">${esc(compareLabel(key))}</td></tr>`;
   }
+  
   html+='</tbody></table>';
   const lvlHint=characterLevel()?'' : ' · Senza livello: i bonus per livello sono confrontati sul coefficiente base.';
   html+=`<div class="compare_hint">Verde = valore migliore · Rosso = valore peggiore · Base o migliorato: usa + / − direttamente sull'oggetto selezionato.${lvlHint}</div>`;
@@ -610,6 +624,8 @@ $('#sort').addEventListener('change',()=>{ updateSortModeState(); render(); });
 $('#sort2').addEventListener('change',()=>{ updateSortModeState(); render(); });
 $('#sort_mode').addEventListener('change',render);
 $('#order').addEventListener('change',render);
+// Il livello rimane vuoto alla riapertura; gli UP funzionano comunque.
+$('#level').value='';
 $('#level').addEventListener('input',render);
 $('#compare_btn').addEventListener('click',()=>{
   if(compareSelected.size<1) return;

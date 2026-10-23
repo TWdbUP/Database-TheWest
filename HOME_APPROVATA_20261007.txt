@@ -1,0 +1,7 @@
+HOME APPROVATA - 07/10/2026
+
+- Inserita nella home reale l'immagine approvata dall'utente.
+- Nessuna rigenerazione grafica ulteriore.
+- Pulsanti cliccabili tramite hotspot trasparenti, senza hover che alteri l'immagine.
+- Mantenute tutte le sezioni interne, inclusa SET con "Ultimi set inseriti".
+- Aggiunta navigazione testuale solo per schermi piccoli.
