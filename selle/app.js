@@ -450,7 +450,7 @@ function compareFormat(item,key,value){
   return sign+fmt(value)+(pct?"%":"");
 }
 function compareKeys(a,b){
-  const order=["spd","xp","money","luck","regen","drop","str","mob","dex","cha","con","punch","tou","sta","hea","rid","ref","dod","hid","swi","aim","sho","pit","fin","rep","lea","tac","tra","ani","app","labor_pts","pra","health_bonus","revival","dmg","fbdef","fboff","fbres","fbdefs","fboffs","fbdmgs"];
+  const order=["str","mob","dex","cha","con","punch","tou","sta","hea","rid","ref","dod","hid","swi","aim","sho","pit","fin","rep","lea","tac","tra","ani","app","labor_pts","pra","health_bonus","revival","dmg","spd","xp","money","luck","regen","drop","fbdef","fboff","fbres","fbdefs","fboffs","fbdmgs"];
   const all=[...order,...Object.keys(a||{}),...Object.keys(b||{})];
   return [...new Set(all)].filter(k=>compareLabel(a,k)||compareLabel(b,k)).filter(k=>compareValue(a,k)!==null||compareValue(b,k)!==null);
 }
@@ -476,7 +476,7 @@ function renderCompare(){
   html+=`</div>`;
   const keySet=new Set();
   for(const x of chosen)for(const k of Object.keys(x))if(compareLabel(x,k)&&compareValue(x,k)!==null)keySet.add(k);
-  const order=["spd","xp","money","luck","regen","drop","str","mob","dex","cha","con","punch","tou","sta","hea","rid","ref","dod","hid","swi","aim","sho","pit","fin","rep","lea","tac","tra","ani","app","labor_pts","pra","health_bonus","revival","dmg","fbdef","fboff","fbres","fbdefs","fboffs","fbdmgs"];
+  const order=["str","mob","dex","cha","con","punch","tou","sta","hea","rid","ref","dod","hid","swi","aim","sho","pit","fin","rep","lea","tac","tra","ani","app","labor_pts","pra","health_bonus","revival","dmg","spd","xp","money","luck","regen","drop","fbdef","fboff","fbres","fbdefs","fboffs","fbdmgs"];
   const keys=[...order,...keySet].filter((k,i,a)=>a.indexOf(k)===i&&keySet.has(k));
   html+=`<table class="compare_table compare_multi"><tbody>`;
   for(const k of keys){
