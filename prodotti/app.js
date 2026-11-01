@@ -895,12 +895,12 @@ function render(){
     if(section==="chests")return isChest(i);
     if(section==="mapdrop")return i.type!=="recipe"&&isMapdropItem(i);
     if(section==="quest")return i.type!=="recipe"&&!FORCE_OTHER_IDS.has(i.id)&&(FORCE_QUEST_ONLY_IDS.has(i.id)||isExistingQuest(i)||isMovedToQuest(i));
-    if(section==="productions")return false;
+    if(section==="productions")return i.type!=="recipe"&&isProductionItem(i);
     if(section.startsWith("production-profession-")){
       const pid=Number(section.slice("production-profession-".length));
       return i.type!=="recipe"&&(CRAFT_PROFESSIONS_BY_ITEM[String(i.id)]||[]).includes(pid);
     }
-    if(section==="recipes")return false;
+    if(section==="recipes")return i.type==="recipe";
     if(section.startsWith("recipe-profession-")){
       const pid=Number(section.slice("recipe-profession-".length));
       return i.type==="recipe"&&(CRAFT_RECIPE_PROFESSIONS_BY_ITEM[String(i.id)]||[]).includes(pid);

@@ -6,3 +6,7 @@
 .twdbup-mini-link:hover,.twdbup-mini-link:focus-visible{background:linear-gradient(#ab793b,#623718);border-color:#d09f51;transform:translateY(-1px);outline:2px solid #e1b869;outline-offset:0}
 .twdbup-mini-link.twdbup-mini-current{border:2px solid #e3b84f;background:linear-gradient(#a37636,#5c391a)}
 @media(max-width:760px){.twdbup-mini-nav{gap:4px}.twdbup-mini-link{flex-basis:70px;min-height:65px}.twdbup-mini-link img{width:62px;height:37px}.twdbup-mini-link span{font-size:9px}}
+
+/* TWdbUP FIX ICONA SELLE 2026-11-01 */
+.twdbup-mini-nav .twdbup-mini-link[href="../selle/"] img{width:68px!important;height:43px!important;max-width:none!important;padding:0!important;object-fit:contain!important;transform:scale(1.12)}
+@media(max-width:760px){.twdbup-mini-nav .twdbup-mini-link[href="../selle/"] img{width:62px!important;height:37px!important}}

@@ -399,16 +399,20 @@ function renderCatalogHtml(){
 function renderWelcome(){
   hidePopup();
   const latestKeys=[
-    'oktoberfest_2026_set_1',   // Set abiti di Maximilian
-    'oktoberfest_2026_set_10',  // Set abiti di Hofer
-    'oktoberfest_2026_set_4',   // Set abiti di Sedlmayr
-    'oktoberfest_2026_set_7',   // Set abiti di Elisabetta di Baviera
-    'oktoberfest_2026_set_13'   // Set armi dipinte a mano
+    'dod_2026_set_1',
+    'dod_2026_set_2',
+    'dod_2026_set_3',
+    'dod_2026_set_4',
+    'dod_2026_set_5',
+    'dod_2026_set_6',
+    'dod_2026_set_7',
+    'dod_2026_set_8',
+    'dod_2026_set_9'
   ];
   const featured=latestKeys.map(key=>DB.sets.find(s=>s.key===key)).filter(Boolean);
   const cards=featured.map(s=>{
     const imgs=(s.items||[]).slice(0,3).map(id=>itemOf(id)).filter(Boolean).map(it=>`<img loading="lazy" src="${esc(it.image||'')}" alt="">`).join('');
-    return `<button class="welcome-set-card" type="button" data-open-set="${esc(s.key)}"><span class="welcome-set-images">${imgs}</span><b>${esc(s.name)}</b><small>${slotCount(s)} pezzi · bonus ${s.bonusThresholds.join('/')} pz</small></button>`;
+    return `<button class="welcome-set-card" type="button" data-open-set="${esc(s.key)}"><span class="welcome-set-images">${imgs}</span><b>${esc(s.name)}</b><small>${slotCount(s)} pezzi · bonus ${(s.bonusThresholds.length?s.bonusThresholds:Object.keys(s.bonus||{})).join('/')} pz</small></button>`;
   }).join('');
   const hasFilters=Boolean($('#search').value.trim()||$('#yearFilter').value||$('#eventFilter').value);
   $('#catalogView').innerHTML=`

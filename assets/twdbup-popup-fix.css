@@ -1,0 +1,29 @@
+/* TWdbUP popup / filtri 2026-11-01. Solo stile e visibilita', nessun bonus alterato. */
+.popup_window{max-width:min(390px,calc(100vw - 14px))}
+.popup_contents{overflow-wrap:break-word}
+.popup_contents .popup_image{display:block;margin-left:auto;margin-right:auto}
+.popup_contents .popup_name,.popup_contents .popup_type,.popup_contents .popup_set,.popup_contents .popup_blocktime{text-align:center}
+.popup_contents .popup_event_line{display:flex;justify-content:center;align-items:center;gap:5px;text-align:center;color:#956018;font-weight:600;margin:4px auto 3px;min-height:24px}
+.popup_contents .popup_event_line img{width:24px;height:26px;object-fit:contain;flex:0 0 auto}
+.popup_contents .popup_attribute{color:#126828;font-weight:700;padding-left:3px;line-height:1.35}
+.popup_contents .popup_skill{color:#19702c;padding-left:13px;line-height:1.35}
+.popup_contents .popup_fb{color:#22652e;padding-left:3px;line-height:1.35}
+.popup_contents .popup_txtgreen,.popup_contents .popup_bonus{color:#0a702c;line-height:1.35}
+.popup_contents .popup_txtred{color:#a12b22}
+.popup_contents .popup_dmg{color:#ab4b13;font-weight:600}
+.popup_contents .popup_text{color:#443320}
+.popup_contents .popup_infos{text-align:center;margin-top:8px}
+.popup_contents .popup_prices{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin:6px auto}
+.popup_contents .popup_price{margin:0}
+.popup_contents .popup_id{text-align:center;margin-top:5px}
+.popup_contents .popup_job{margin:5px auto}
+.popup_contents .twdbup-set-siblings{padding:7px 4px;margin:8px 0 6px;border-top:1px solid #c7b89b;border-bottom:1px solid #c7b89b;background:#f0e8d6;text-align:center}
+.popup_contents .twdbup-set-siblings-title{font:700 11px Georgia,serif;color:#694527;margin-bottom:5px}
+.popup_contents .twdbup-set-members-grid{display:flex;justify-content:center;flex-wrap:wrap;gap:7px}
+.popup_contents .twdbup-set-member{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;width:85px;max-width:85px;gap:2px}
+.popup_contents .twdbup-set-member img{width:44px;height:44px;object-fit:contain;display:block}
+.popup_contents .twdbup-set-member span{font-size:10px;line-height:1.2;color:#65442b;overflow-wrap:anywhere}
+/* Filtri professione: non nascondere i 4 pulsanti; sono il modo per scegliere il catalogo. */
+.profession-filters:not([hidden]) .production-profession-filter-btn,
+.profession-filters:not([hidden]) .recipe-profession-filter-btn{display:inline-flex!important;align-items:center;justify-content:center}
+@media(max-width:480px){.popup_window{min-width:245px}.popup_contents{margin:12px 13px}.popup_contents .twdbup-set-member{width:70px}.popup_contents .twdbup-set-member img{width:40px;height:40px}}
