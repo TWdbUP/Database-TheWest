@@ -1,0 +1,123 @@
+/* TWdbUP / 2026-10-30 - SOLO LAYOUT DI PRODOTTI E SELLE
+   Riferimento visivo: screenshot Abiti approvata dall'utente (fascia larga, pannelli centrati).
+   Il CSS standard Abiti (style.css), il motore e le classi UP non sono alterati. */
+body.twdbup-layout-reference #document-wrapper{
+  box-sizing:border-box;
+  width:calc(100% - 8%);
+  max-width:1440px;
+  padding:16px 0 42px;
+  margin:0 auto;
+}
+body.twdbup-layout-reference .wiki-title.twdbup-unified-title{
+  display:grid;
+  grid-template-columns:minmax(155px,1fr) auto minmax(155px,1fr);
+  align-items:center;
+  width:100%;
+  max-width:none;
+  height:86px;
+  margin:0 auto;
+  border:2px solid #976b35;
+  border-bottom-width:3px;
+  border-radius:0;
+  padding:0 16px!important;
+  background:#3b1a0a;
+  box-shadow:0 2px 2px rgba(42,16,3,.2);
+}
+body.twdbup-layout-reference .wiki-title.twdbup-unified-title .home-link{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:15px;
+  font-weight:700;
+  color:#ffe2a7;
+  text-decoration:none;
+  text-shadow:1px 1px #120701;
+  align-self:end;
+  margin-bottom:16px;
+}
+body.twdbup-layout-reference .wiki-title.twdbup-unified-title .title-center{
+  align-self:start;
+  justify-self:center;
+}
+body.twdbup-layout-reference .wiki-title.twdbup-unified-title .title-center h1{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:40px!important;
+  line-height:1.15!important;
+  color:#ffdea7;
+  text-shadow:1px 2px #120701;
+  margin:8px 0 0!important;
+  padding:0!important;
+}
+body.twdbup-layout-reference .wiki-title.twdbup-unified-title .item-count{
+  position:static!important;
+  align-self:end;
+  justify-self:end;
+  margin:0 0 16px!important;
+  color:#ffe2a7;
+  font:700 13px Georgia,'Times New Roman',serif;
+}
+/* I riquadri di Abiti NON occupano tutta la pagina:
+   centro coerente per Minihome, filtri, ricerca e confronto. */
+body.twdbup-layout-reference .twdbup-mini-nav{
+  width:calc(100% - 16px);
+  max-width:972px;
+  margin:10px auto 12px;
+  justify-content:center;
+}
+body.twdbup-layout-reference .toolbar,
+body.twdbup-layout-reference .product-toolbar{
+  width:calc(100% - 16px);
+  max-width:972px;
+  margin:0 auto 6px;
+}
+body.twdbup-layout-reference .product-section-buttons{
+  width:calc(100% - 16px);
+  max-width:972px;
+  margin:0 auto 9px;
+  padding:7px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:7px;
+  align-items:stretch;
+}
+body.twdbup-layout-reference .product-section-btn{
+  min-width:0;
+  flex:1 1 138px;
+  max-width:160px;
+  margin:0!important;
+}
+body.twdbup-layout-reference .profession-filters,
+body.twdbup-layout-reference .set-filters,
+body.twdbup-layout-reference .compare_bar,
+body.twdbup-layout-reference .compare_panel,
+body.twdbup-layout-reference .requirements_panel{
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
+}
+body.twdbup-layout-reference .items{
+  width:calc(100% - 16px);
+  max-width:1080px;
+  margin:6px auto 0;
+}
+/* Unicamente il fondino della sella nella minihome, gli altri restano uguali. */
+@media(max-width:860px){
+  body.twdbup-layout-reference #document-wrapper{width:100%;padding:10px 12px 34px}
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title{height:72px;padding:0 9px!important;grid-template-columns:minmax(80px,1fr) auto minmax(80px,1fr)}
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title .title-center h1{font-size:clamp(22px,5vw,35px)!important;margin-top:10px!important}
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title .home-link{font-size:11px;margin-bottom:14px}
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title .item-count{font-size:10px;margin-bottom:14px!important}
+}
+@media(max-width:490px){
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title .home-link{font-size:0}
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title .home-link::before{content:'← HOME';font-size:10px}
+  body.twdbup-layout-reference .wiki-title.twdbup-unified-title .item-count{font-size:9px}
+  body.twdbup-layout-reference .product-section-btn{flex-basis:40%;max-width:none}
+}
+
+/* 13 categorie sulla stessa riga della Minihome, evitando l'allargamento orizzontale. */
+@media(min-width:1080px){
+  body.twdbup-layout-reference .twdbup-mini-nav .twdbup-mini-link{flex:0 0 68px;min-width:0;}
+  body.twdbup-layout-reference .twdbup-mini-nav .twdbup-mini-link img{width:60px;height:41px;}
+  body.twdbup-layout-reference .twdbup-mini-nav .twdbup-mini-link span{font-size:9px;}
+  body.twdbup-layout-reference .twdbup-mini-nav .twdbup-mini-link.twdbup-mini-selle img{width:60px;height:41px;padding:2px 10px;}
+}

@@ -425,7 +425,6 @@ function init(){
   if(resetUpBtn)resetUpBtn.addEventListener("click",()=>{upgradeById.clear();render();});
   render();
 }
-init();
 
 /* =========================
    V25 UI: inline upgrade + multi-select compare
@@ -888,6 +887,7 @@ function render(){
   const isBaseUncatalogued=i=>i.type!=="recipe"&&!isMapdropItem(i)&&!isExistingQuest(i)&&!isProductionItem(i)&&!isSaddle(i)&&!isChest(i);
   const isMovedToQuest=i=>isBaseUncatalogued(i)&&!hasUseAction(i)&&!FORCE_OTHER_IDS.has(i.id);
   const matchesSection=i=>{
+    if(isSaddle(i))return false;
     if(section==="all")return i.type!=="recipe";
     if(section==="saddles")return isSaddle(i);
     if(section==="saddles-set")return isSaddleSet(i);
@@ -917,9 +917,9 @@ function render(){
     if(section==="other-cards")return collectionCardsFor(i).some(card=>JSON.stringify(card).toLowerCase().includes(q));
     return false;
   };
-  let list=items.filter(i=>matchesSection(i)&&matchesSearch(i));
+  let list=items.filter(i=>!isSaddle(i)&&matchesSection(i)&&matchesSearch(i));
   const showingRecipes=section==="recipes"||section.startsWith("recipe-profession-");
-  const totalForMode=showingRecipes?items.filter(i=>i.type==="recipe").length:items.filter(i=>i.type!=="recipe").length;
+  const totalForMode=showingRecipes?items.filter(i=>i.type==="recipe").length:items.filter(i=>i.type!=="recipe"&&!isSaddle(i)).length;
   if(section==="saddles"||section==="saddles-set"||section==="saddles-noset"){
     const saddleTotal=items.filter(isSaddle).length;
     $("#count").textContent=`${list.length} / ${saddleTotal} selle`;
@@ -980,3 +980,7 @@ function render(){
 
 // POSTIT 1 — scorrimento rapido
 (()=>{const top=document.querySelector('#goTop'),bottom=document.querySelector('#goBottom');if(top)top.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));if(bottom)bottom.addEventListener('click',()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}));function upd(){const y=window.scrollY,h=window.innerHeight,doc=document.documentElement.scrollHeight;if(top)top.classList.toggle('show',y>220);if(bottom)bottom.classList.toggle('show',y+h<doc-220)}window.addEventListener('scroll',upd,{passive:true});window.addEventListener('resize',upd);upd();})();
+
+
+// TWdbUP split: inizializza solo dopo che tutte le costanti/classificazioni sono definite.
+init();

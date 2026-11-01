@@ -1,166 +1,91 @@
 <!DOCTYPE html>
-
 <html lang="it">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Prodotti — Database oggetti</title>
-<link href="style.css" rel="stylesheet"/>
+<title>Prodotti — The West Database</title>
+<link href="style.css" rel="stylesheet"/><link href="product-extras.css" rel="stylesheet"/>
 <link href="../assets/twdbup-minihome.css" rel="stylesheet"/>
 <link href="../assets/twdbup-category-title.css" rel="stylesheet"/>
-</head>
-<body>
+<link href="layout-reference.css" rel="stylesheet"/></head>
+<body class="twdbup-layout-reference">
 <main id="document-wrapper">
-<header class="page-title twdbup-unified-title">
-  <a class="home-link" href="../">← Torna alla home</a>
-  <div class="title-center"><h1>Prodotti</h1></div>
-  <div class="item-count" id="count"></div>
+<header class="wiki-title twdbup-unified-title">
+<a class="home-link" href="../">← Torna alla home</a>
+<div class="title-center"><h1>Prodotti</h1></div>
+<div class="item-count" id="count"></div>
 </header>
-<nav class="twdbup-mini-nav" aria-label="Navigazione rapida tra le categorie TWdbUP">
-      <a class="twdbup-mini-link" href="../copricapi/" target="_blank" rel="noopener noreferrer" title="Apri Copricapi in una nuova scheda" aria-label="Apri Copricapi in una nuova scheda"><img src="../assets/home_v2/copricapi.png" alt="" loading="lazy"><span>Copricapi</span></a>
-      <a class="twdbup-mini-link" href="../collane/" target="_blank" rel="noopener noreferrer" title="Apri Collane in una nuova scheda" aria-label="Apri Collane in una nuova scheda"><img src="../assets/home_v2/collane.png" alt="" loading="lazy"><span>Collane</span></a>
-      <a class="twdbup-mini-link" href="../abiti/" target="_blank" rel="noopener noreferrer" title="Apri Abiti in una nuova scheda" aria-label="Apri Abiti in una nuova scheda"><img src="../assets/home_v2/abiti.png" alt="" loading="lazy"><span>Abiti</span></a>
-      <a class="twdbup-mini-link" href="../cinture/" target="_blank" rel="noopener noreferrer" title="Apri Cinture in una nuova scheda" aria-label="Apri Cinture in una nuova scheda"><img src="../assets/home_v2/cinture.png" alt="" loading="lazy"><span>Cinture</span></a>
-      <a class="twdbup-mini-link" href="../pantaloni/" target="_blank" rel="noopener noreferrer" title="Apri Pantaloni in una nuova scheda" aria-label="Apri Pantaloni in una nuova scheda"><img src="../assets/home_v2/pantaloni.png" alt="" loading="lazy"><span>Pantaloni</span></a>
-      <a class="twdbup-mini-link" href="../scarpe/" target="_blank" rel="noopener noreferrer" title="Apri Scarpe in una nuova scheda" aria-label="Apri Scarpe in una nuova scheda"><img src="../assets/home_v2/scarpe.png" alt="" loading="lazy"><span>Scarpe</span></a>
-      <a class="twdbup-mini-link" href="../armi_fuoco/" target="_blank" rel="noopener noreferrer" title="Apri Armi fuoco in una nuova scheda" aria-label="Apri Armi fuoco in una nuova scheda"><img src="../assets/home_v2/armi_fuoco.png" alt="" loading="lazy"><span>Armi fuoco</span></a>
-      <a class="twdbup-mini-link" href="../armi_contusione/" target="_blank" rel="noopener noreferrer" title="Apri Armi cont. in una nuova scheda" aria-label="Apri Armi cont. in una nuova scheda"><img src="../assets/home_v2/armi_contusione.png" alt="" loading="lazy"><span>Armi cont.</span></a>
-      <a class="twdbup-mini-link" href="../fucili/" target="_blank" rel="noopener noreferrer" title="Apri Fucili in una nuova scheda" aria-label="Apri Fucili in una nuova scheda"><img src="../assets/home_v2/fucili.png" alt="" loading="lazy"><span>Fucili</span></a>
-      <a class="twdbup-mini-link" href="../animali/" target="_blank" rel="noopener noreferrer" title="Apri Animali in una nuova scheda" aria-label="Apri Animali in una nuova scheda"><img src="../assets/home_v2/animali.png" alt="" loading="lazy"><span>Animali</span></a>
-      <a class="twdbup-mini-link twdbup-mini-current" href="../prodotti/" target="_blank" rel="noopener noreferrer" title="Apri Prodotti in una nuova scheda" aria-label="Apri Prodotti in una nuova scheda" aria-current="page"><img src="../assets/home_v2/prodotti.png" alt="" loading="lazy"><span>Prodotti</span></a>
-      <a class="twdbup-mini-link" href="../set/" target="_blank" rel="noopener noreferrer" title="Apri SET in una nuova scheda" aria-label="Apri SET in una nuova scheda"><img src="../assets/home_v2/set.png" alt="" loading="lazy"><span>SET</span></a>
+<nav aria-label="Navigazione rapida tra le categorie TWdbUP" class="twdbup-mini-nav">
+<a aria-label="Apri Copricapi in una nuova scheda" class="twdbup-mini-link" href="../copricapi/" rel="noopener noreferrer" target="_blank" title="Apri Copricapi in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/copricapi.png"/><span>Copricapi</span></a>
+<a aria-label="Apri Collane in una nuova scheda" class="twdbup-mini-link" href="../collane/" rel="noopener noreferrer" target="_blank" title="Apri Collane in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/collane.png"/><span>Collane</span></a>
+<a aria-label="Apri Abiti in una nuova scheda" class="twdbup-mini-link" href="../abiti/" rel="noopener noreferrer" target="_blank" title="Apri Abiti in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/abiti.png"/><span>Abiti</span></a>
+<a aria-label="Apri Cinture in una nuova scheda" class="twdbup-mini-link" href="../cinture/" rel="noopener noreferrer" target="_blank" title="Apri Cinture in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/cinture.png"/><span>Cinture</span></a>
+<a aria-label="Apri Pantaloni in una nuova scheda" class="twdbup-mini-link" href="../pantaloni/" rel="noopener noreferrer" target="_blank" title="Apri Pantaloni in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/pantaloni.png"/><span>Pantaloni</span></a>
+<a aria-label="Apri Scarpe in una nuova scheda" class="twdbup-mini-link" href="../scarpe/" rel="noopener noreferrer" target="_blank" title="Apri Scarpe in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/scarpe.png"/><span>Scarpe</span></a>
+<a aria-label="Apri Armi fuoco in una nuova scheda" class="twdbup-mini-link" href="../armi_fuoco/" rel="noopener noreferrer" target="_blank" title="Apri Armi fuoco in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/armi_fuoco.png"/><span>Armi fuoco</span></a>
+<a aria-label="Apri Armi cont. in una nuova scheda" class="twdbup-mini-link" href="../armi_contusione/" rel="noopener noreferrer" target="_blank" title="Apri Armi cont. in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/armi_contusione.png"/><span>Armi cont.</span></a>
+<a aria-label="Apri Fucili in una nuova scheda" class="twdbup-mini-link" href="../fucili/" rel="noopener noreferrer" target="_blank" title="Apri Fucili in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/fucili.png"/><span>Fucili</span></a>
+<a aria-label="Apri Animali in una nuova scheda" class="twdbup-mini-link" href="../animali/" rel="noopener noreferrer" target="_blank" title="Apri Animali in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/animali.png"/><span>Animali</span></a><a aria-label="Apri Selle in una nuova scheda" class="twdbup-mini-link twdbup-mini-selle" href="../selle/" rel="noopener noreferrer" target="_blank" title="Apri Selle in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/selle_icon.png"/><span>Selle</span></a>
+<a aria-current="page" aria-label="Apri Prodotti in una nuova scheda" class="twdbup-mini-link twdbup-mini-current" href="../prodotti/" rel="noopener noreferrer" target="_blank" title="Apri Prodotti in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/prodotti.png"/><span>Prodotti</span></a>
+<a aria-label="Apri SET in una nuova scheda" class="twdbup-mini-link" href="../set/" rel="noopener noreferrer" target="_blank" title="Apri SET in una nuova scheda"><img alt="" loading="lazy" src="../assets/home_v2/set.png"/><span>SET</span></a>
 </nav>
-
 <div aria-label="Selezione prodotti" class="product-section-buttons" role="group">
-<button aria-label="Selle" class="product-section-btn" data-section="saddles" title="Selle" type="button"><img alt="" aria-hidden="true" class="section-icon-img" src="assets/icon_selle.png"/><span>Selle</span></button>
 <button aria-label="Prodotti trovati con lavori" class="product-section-btn" data-section="mapdrop" title="Prodotti trovati con lavori" type="button"><img alt="" aria-hidden="true" class="section-icon-img" src="assets/icon_prodotti_lavoro.png"/><span>Prodotti trovati con lavori</span></button>
 <button aria-label="Oggetti missione" class="product-section-btn" data-section="quest" title="Oggetti missione" type="button"><img alt="" aria-hidden="true" class="section-icon-img" src="assets/icon_oggetti_missione.png"/><span>Oggetti missione</span></button>
 <button aria-label="Forzieri" class="product-section-btn" data-section="chests" title="Forzieri" type="button"><img alt="" aria-hidden="true" class="section-icon-img" src="assets/icon_forzieri.png"/><span>Forzieri</span></button>
 <button aria-label="Produzioni da professioni" class="product-section-btn" data-section="productions" title="Produzioni da professioni" type="button"><img alt="" aria-hidden="true" class="section-icon-img" src="assets/icon_produzioni.png"/><span>Produzioni da professioni</span></button>
 <button aria-label="Ricette" class="product-section-btn recipe-main-btn" data-section="recipes" title="Ricette" type="button"><img alt="" aria-hidden="true" class="section-icon-img section-icon-recipe" src="assets/icon_ricette.png"/><span>Ricette</span></button>
-<button aria-label="Altro" class="product-section-btn other-main-btn" data-section="other" title="Altro" type="button">
-<span aria-hidden="true" class="other-icon">•••</span><span>Altro</span>
-</button>
-</div>
-<div aria-label="Filtra Selle per set" class="profession-filters" hidden="" id="saddle-set-filters" role="group">
-<span class="profession-label">Selle:</span>
-<button class="profession-filter-btn saddle-set-filter-btn" data-setfilter="set" type="button">SET</button>
-<button class="profession-filter-btn saddle-set-filter-btn" data-setfilter="noset" type="button">NO SET</button>
-</div>
-<div aria-label="Filtra produzioni per professione" class="profession-filters" hidden="" id="production-profession-filters" role="group">
-<span class="profession-label">Produzioni:</span>
-<button class="profession-filter-btn production-profession-filter-btn" data-profession="1" type="button">Cuoco</button>
-<button class="profession-filter-btn production-profession-filter-btn" data-profession="2" type="button">Medico Ciarlatano</button>
-<button class="profession-filter-btn production-profession-filter-btn" data-profession="3" type="button">Fabbro</button>
-<button class="profession-filter-btn production-profession-filter-btn" data-profession="4" type="button">Sellaio</button>
-</div>
-<div aria-label="Filtra ricette per professione" class="profession-filters" hidden="" id="recipe-profession-filters" role="group">
-<span class="profession-label">Ricette:</span>
-<button class="profession-filter-btn recipe-profession-filter-btn" data-profession="1" type="button">Cuoco</button>
-<button class="profession-filter-btn recipe-profession-filter-btn" data-profession="2" type="button">Medico Ciarlatano</button>
-<button class="profession-filter-btn recipe-profession-filter-btn" data-profession="3" type="button">Fabbro</button>
-<button class="profession-filter-btn recipe-profession-filter-btn" data-profession="4" type="button">Sellaio</button>
-</div>
-<div aria-label="Filtra Altro" class="profession-filters other-subcategory-filters" hidden="" id="other-subcategory-filters" role="group">
-<span class="profession-label">Altro:</span>
-<button class="profession-filter-btn other-subcategory-filter-btn" data-other="events" type="button">Eventi</button>
-<button class="profession-filter-btn other-subcategory-filter-btn" data-other="cards" type="button">Carte da collezione</button>
-<button class="profession-filter-btn other-subcategory-filter-btn" data-other="avatar" type="button">Parte avatar</button>
-</div>
-<div class="toolbar product-toolbar">
-<label class="product-tool" id="input_level">
+<button aria-label="Altro" class="product-section-btn other-main-btn" data-section="other" title="Altro" type="button"><span aria-hidden="true" class="other-icon">•••</span><span>Altro</span></button>
+</div><div aria-label="Filtra produzioni per professione" class="profession-filters" hidden="" id="production-profession-filters" role="group"><span class="profession-label">Produzioni:</span><button class="profession-filter-btn production-profession-filter-btn" data-profession="1" type="button">Cuoco</button><button class="profession-filter-btn production-profession-filter-btn" data-profession="2" type="button">Medico Ciarlatano</button><button class="profession-filter-btn production-profession-filter-btn" data-profession="3" type="button">Fabbro</button><button class="profession-filter-btn production-profession-filter-btn" data-profession="4" type="button">Sellaio</button></div><div aria-label="Filtra ricette per professione" class="profession-filters" hidden="" id="recipe-profession-filters" role="group"><span class="profession-label">Ricette:</span><button class="profession-filter-btn recipe-profession-filter-btn" data-profession="1" type="button">Cuoco</button><button class="profession-filter-btn recipe-profession-filter-btn" data-profession="2" type="button">Medico Ciarlatano</button><button class="profession-filter-btn recipe-profession-filter-btn" data-profession="3" type="button">Fabbro</button><button class="profession-filter-btn recipe-profession-filter-btn" data-profession="4" type="button">Sellaio</button></div><div aria-label="Filtra Altro" class="profession-filters other-subcategory-filters" hidden="" id="other-subcategory-filters" role="group"><span class="profession-label">Altro:</span><button class="profession-filter-btn other-subcategory-filter-btn" data-other="events" type="button">Eventi</button><button class="profession-filter-btn other-subcategory-filter-btn" data-other="cards" type="button">Carte da collezione</button><button class="profession-filter-btn other-subcategory-filter-btn" data-other="avatar" type="button">Parte avatar</button></div><div hidden="" id="saddle-set-filters"></div><div class="toolbar product-toolbar">
+<label class="tool" id="input_level">
 <span>Livello</span>
-<input aria-label="Tuo livello" class="west level-input" id="level" max="500" min="0" placeholder="Tuo livello" type="number"/>
+<input class="west level-input" id="level" max="500" min="0" placeholder="Tuo livello" type="number"/>
 </label>
-<div class="upgrade_hint product-tool" id="input_upgrade">Passa sul prodotto per upgrade e confronto</div>
-<label class="product-tool search-tool" id="input_search">
+<label class="tool search-tool" id="input_search">
 <span>Cerca</span>
-<input aria-label="Cerca" class="west" id="search" placeholder="Nome, ID, set…" type="search"/>
+<input class="west" id="search" placeholder="Nome, ID, set…" type="search"/>
 </label>
-<div class="product-sort-tools" id="sort_items">
-<label class="product-tool">
+<div class="product-sort-tools" id="sort_items"><label class="tool">
 <span>Ordina 1</span>
 <select aria-label="Ordina 1" class="west" id="sort">
-<option selected="" value="id">ID</option>
-<option value="name">Nome</option>
-<option value="level">Livello oggetto</option>
-<option value="strength">Forza</option>
-<option value="flexibility">Agilità</option>
-<option value="dexterity">Destrezza</option>
-<option value="charisma">Carisma</option>
-<option value="build">Costruzione</option>
-<option value="punch">Vigore</option>
-<option value="tough">Robustezza</option>
-<option value="endurance">Energia</option>
-<option value="health">Punti vita</option>
-<option value="ride">Cavalcata</option>
-<option value="reflex">Riflessi</option>
-<option value="dodge">Schivata</option>
-<option value="hide">Nascosto</option>
-<option value="swim">Nuoto</option>
-<option value="aim">Mira</option>
-<option value="shot">Sparare</option>
-<option value="pitfall">Trappole</option>
-<option value="finger_dexterity">Precisione</option>
-<option value="repair">Riparazione</option>
-<option value="leadership">Comando</option>
-<option value="tactic">Tattica</option>
-<option value="trade">Negoziazione</option>
-<option value="animal">Rapporto con gli animali</option>
-<option value="appearance">Aspetto</option>
-<option value="experience">Esperienza %</option>
-<option value="dollar">Soldi %</option>
-<option value="luck">Fortuna %</option>
-<option value="regen">Rigenerazione %</option>
-<option value="drop">Trova prodotti %</option>
-<option value="speed">Velocità %</option>
-<option value="labor_pts">Punti lavoro</option>
-<option value="pray">Pregare</option>
-<option value="fbdef">Forte — Difesa</option>
-<option value="fboff">Forte — Attacco</option>
-<option value="fbres">Forte — Resistenza</option>
-<option value="fbdefs">Settore — Difesa</option>
-<option value="fboffs">Settore — Attacco</option>
-<option value="fbdmgs">Settore — Danni</option>
-<option value="price">Prezzo acquisto</option>
-<option value="upg_yes">Migliorabile</option>
-<option value="upg_no">Non migliorabile</option>
-<option value="auc_yes">Vendibile all'asta</option>
-<option value="auc_no">Non vendibile all'asta</option>
-</select>
-</label>
-<label class="product-tool">
+<option selected="" value="id">ID</option><option value="name">Nome</option><option value="level">Livello oggetto</option>
+<option value="strength">Forza</option><option value="flexibility">Agilità</option><option value="dexterity">Destrezza</option><option value="charisma">Carisma</option>
+<option value="build">Costruzione</option><option value="punch">Vigore</option><option value="tough">Robustezza</option><option value="endurance">Energia</option><option value="health">Punti vita</option>
+<option value="ride">Cavalcata</option><option value="reflex">Riflessi</option><option value="dodge">Schivata</option><option value="hide">Nascosto</option><option value="swim">Nuoto</option>
+<option value="aim">Mira</option><option value="shot">Sparare</option><option value="pitfall">Trappole</option><option value="finger_dexterity">Precisione</option><option value="repair">Riparazione</option>
+<option value="leadership">Comando</option><option value="tactic">Tattica</option><option value="trade">Negoziazione</option><option value="animal">Rapporto con gli animali</option><option value="appearance">Aspetto</option>
+<option value="experience">Esperienza %</option><option value="dollar">Soldi %</option><option value="luck">Fortuna %</option><option value="regen">Rigenerazione %</option><option value="drop">Trova prodotti %</option><option value="speed">Velocità %</option>
+<option value="labor_pts">Punti lavoro</option><option value="pray">Pregare</option><option value="fbdef">Forte — Difesa</option><option value="fboff">Forte — Attacco</option><option value="fbres">Forte — Resistenza</option>
+<option value="fbdefs">Settore — Difesa</option><option value="fboffs">Settore — Attacco</option><option value="fbdmgs">Settore — Danni</option><option value="price">Prezzo acquisto</option>
+<option value="upg_yes">Migliorabile</option><option value="upg_no">Non migliorabile</option><option value="auc_yes">Vendibile all'asta</option><option value="auc_no">Non vendibile all'asta</option></select>
+</label><label class="tool">
 <span>Ordina 2</span>
-<select aria-label="Ordina 2" class="west secondary-sort" id="sort2">
+<select class="west secondary-sort" id="sort2">
 <option value="">— Nessuno —</option>
 </select>
-</label>
-<label class="product-tool mode-tool">
+</label><label class="tool mode-tool">
 <span>Modalità</span>
 <select class="west sort-mode" disabled="" id="sort_mode">
 <option selected="" value="priority">Priorità (1° poi 2°)</option>
 <option value="sum">Somma (1° + 2°)</option>
 </select>
-</label>
-<label class="product-tool order-tool">
+</label><label class="tool order-tool">
 <span>Verso</span>
 <select class="west mini" id="order">
 <option selected="" value="asc">↑</option>
 <option value="desc">↓</option>
 </select>
-</label>
-</div>
+</label></div>
 <button class="west reset-up-btn" id="resetUp" type="button">Azzera tutti gli UP</button></div>
 <div aria-live="polite" class="compare_bar" id="compare_bar">
-<div class="compare_left"><span id="compare_status">Seleziona 1–4 selle per il confronto</span></div>
+<div class="compare_left"><span id="compare_status">Seleziona 1–4 oggetti per il confronto</span></div>
 <div class="compare_actions">
 <button class="compare_btn" disabled="" id="compare_btn" type="button">CONFRONTA</button>
 <button class="compare_clear" id="compare_clear" type="button">Azzera</button>
 </div>
 </div>
 <div class="compare_panel" hidden="" id="compare_panel"></div>
-<div class="requirements_panel" hidden="" id="requirements_panel"></div>
-<div aria-label="Elenco prodotti" class="items" id="items"></div>
+<div class="requirements_panel" hidden="" id="requirements_panel"></div><div aria-label="Elenco prodotti" class="items" id="items"></div>
 </main>
 <div aria-hidden="true" class="popup_window" id="popup_window">
 <div class="popup_front"></div>
