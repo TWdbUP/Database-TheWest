@@ -1,0 +1,320 @@
+// ==UserScript==
+// @name         TWdbUP — Inventario (pubblica con 1 clic)
+// @namespace    https://github.com/TWdbUP/Database-TheWest
+// @version      0.2.1
+// @description  Pubblica Bag+Wear con un clic dentro il gioco; esporta JSON di riserva.
+// @include      https://*.the-west.*/game.php*
+// @run-at       document-idle
+// @noframes
+// @grant        GM_xmlhttpRequest
+// @grant        GM.xmlHttpRequest
+// @grant        unsafeWindow
+// @connect      import-inventory-tw.twdbup.workers.dev
+// ==/UserScript==
+
+/*
+ * TWdbUP Inventario v0.2.1 — versione pubblica.
+ * La pubblicazione e' esplicita: solo clic su "Pubblica online".
+ * Inventario pubblico a chi possiede il link, conservato per 30 giorni.
+ * Gli accessi al sito richiedono una connessione Internet; le immagini vengono dal CDN.
+ * Ricorda: ogni pubblicazione genera un NUOVO link, non aggiorna il vecchio.
+ */
+(() => {
+  'use strict';
+  const BASE = 'https://import-inventory-tw.twdbup.workers.dev';
+  const ROOT_ID='twdbup-inventory-direct-v02';
+  // Secondo controllo: esegui SOLO sui mondi di gioco, nella vera pagina game.php.
+  // Non attivarti su www.the-west.it, wiki.the-west.it o altre sottopagine.
+  const worldHost = /^[a-z]{2,6}\d{1,4}\.the-west\.(?:[a-z]{2,3}|com\.(?:br|pt))$/i.test(location.hostname);
+  const gamePath  = /^\/game\.php\/?$/i.test(location.pathname);
+  if (!worldHost || !gamePath) return;
+  if (window.top !== window.self) return;
+  const getPage = () => {
+    try { if(typeof unsafeWindow !== 'undefined' && unsafeWindow?.Bag) return unsafeWindow; } catch(_) {}
+    try { if(window.wrappedJSObject?.Bag) return window.wrappedJSObject; } catch(_) {}
+    return window;
+  };
+
+  function collectInventory() {
+    const game = getPage();
+    const Bag = game.Bag;
+    const Wear = game.Wear;
+    const ItemManager = game.ItemManager;
+    if (!Bag || !Wear || !ItemManager || !Bag.loaded || !Bag.items_by_id) {
+      throw new Error('Inventario non pronto: attendi il caricamento della Bag nel gioco e riprova.');
+    }
+    if (typeof Wear.get !== 'function' || typeof ItemManager.get !== 'function') {
+      throw new Error('API Bag/Wear/ItemManager non disponibili: verifica il gestore userscript.');
+    }
+
+    // Le righe sottostanti provengono dal TEST 06B già collaudato.
+    const SLOTS = ['head', 'neck', 'body', 'belt', 'pants', 'foot',
+                 'left_arm', 'right_arm', 'yield', 'animal'];
+  const LABELS = {
+    head: 'Copricapi', neck: 'Collane', body: 'Giacche', belt: 'Cinture',
+    pants: 'Pantaloni', foot: 'Scarpe', left_arm: 'Armi sinistre',
+    right_arm: 'Armi destre', yield: 'Prodotti', animal: 'Animali',
+    recipe: 'Ricette'
+  };
+  const ATTRS = {strength: 'Forza', flexibility: 'Agilità',
+                 dexterity: 'Destrezza', charisma: 'Carisma'};
+  const SKILLS = {
+    build: 'Costruzione', punch: 'Vigore', tough: 'Robustezza',
+    endurance: 'Energia', health: 'Punti vita', ride: 'Cavalcata',
+    reflex: 'Riflessi', dodge: 'Schivata', hide: 'Nascosto', swim: 'Nuoto',
+    aim: 'Mira', shot: 'Sparare', pitfall: 'Trappole',
+    finger_dexterity: 'Precisione', repair: 'Riparazione',
+    leadership: 'Comando', tactic: 'Tattica', trade: 'Negoziazione',
+    animal: 'Rapporto con gli animali', appearance: 'Aspetto'
+  };
+  const getNum = x => Number(x) || 0;
+  const fmt = n => {
+    const v = Number(n);
+    if (!Number.isFinite(v)) return String(n);
+    // Sufficienti decimali per preservare i bonus originali degli oggetti.
+    return String(Number(v.toFixed(9))).replace('.', ',');
+  };
+
+  // Bonus diretti (bonus.attributes / bonus.skills): gia' migliorati dal gioco.
+  // Bonus dell'array bonus.item: l'ItemManager conserva i coefficienti BASE.
+  // Applichiamo qui SOLO a essi la funzione nativa del gioco, senza usare
+  // il livello del personaggio e senza alterare la definizione originale.
+  function readBonuses(obj) {
+    const b = obj.bonus || {};
+    const up = Number(obj.getItemLevel?.() ?? obj.item_level ?? 0);
+    const rows = [];
+    for (const [key, value] of Object.entries(b.attributes || {})) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || !n) continue;
+      rows.push({kind: 'attr', text: (n < 0 ? '- ' : '+ ') + fmt(Math.abs(n)) + ' ' + (ATTRS[key] || key)});
+    }
+    for (const [key, value] of Object.entries(b.skills || {})) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || !n) continue;
+      rows.push({kind: 'skill', text: (n < 0 ? '- ' : '+ ') + fmt(Math.abs(n)) + ' ' + (SKILLS[key] || key)});
+    }
+    for (const entry of Array.isArray(b.item) ? b.item : []) {
+      if (!entry) continue;
+      const inner = entry.bonus || {};
+      const rawField = inner.value != null ? inner.value : entry.value;
+      const raw = rawField == null ? NaN : Number(rawField);
+      const desc = String(entry.desc || inner.desc || '').trim();
+      const kind = inner.type === 'attribute' ? 'attr'
+                 : inner.type === 'skill' ? 'skill' : 'special';
+      const fallbackLabel = (inner.type === 'attribute' ? ATTRS[inner.name] :
+                            inner.type === 'skill' ? SKILLS[inner.name] : null) ||
+                            inner.name || entry.type || '';
+      let text;
+      if (Number.isFinite(raw)) {
+        let adjusted = raw;
+        if (up > 0) {
+          if (typeof ItemManager.calculateItemLevelBonus !== 'function') {
+            throw Error('Funzione nativa bonus UP non disponibile: esportazione annullata.');
+          }
+          // Verificato sul cappello di John: 0,04 -> 0,048 e 300 -> 360 a UP2.
+          const delta = Number(ItemManager.calculateItemLevelBonus(up, raw));
+          if (!Number.isFinite(delta)) throw Error('Miglioramento UP non valido per oggetto ' + obj.item_id);
+          adjusted = raw + delta;
+        }
+        // Conserva la descrizione originale e sostituisce soltanto il numero.
+        // Gestisce anche descrizioni del tipo '+-1.96 Agilita''.
+        const m = desc.match(/^\s*[+-]\s*(-?[\d.,]+)\s*(%?)(.*)$/s);
+        if (m) {
+          const isPercent = m[2] === '%';
+          const shownBase = Number(m[1].replace(',', '.'));
+          // I dati percentuali di The West sono normalmente in frazioni
+          // (0.1 == 10%). Non applicare il *100 a valori gia' in percentuale.
+          const fractional = isPercent && Number.isFinite(shownBase) &&
+            Math.abs(Math.abs(shownBase) - Math.abs(raw * 100)) < 1e-6;
+          const amount = isPercent && fractional ? adjusted * 100 : adjusted;
+          text = (amount < 0 ? '- ' : '+ ') + fmt(Math.abs(amount)) +
+                 (isPercent ? '%' : '') + ' ' + m[3].trim();
+        } else {
+          // Nessun numero iniziale (es. 'Ripresa immediata dopo KO').
+          text = (adjusted < 0 ? '- ' : '+ ') + fmt(Math.abs(adjusted)) + ' ' + (desc || fallbackLabel);
+        }
+      } else {
+        text = desc || fallbackLabel;
+      }
+      if (text) rows.push({kind, text});
+    }
+    return rows;
+  }
+
+  const items = new Map();
+  let missing = 0;
+  function add(itemId, qty, source, objHint) {
+    const id = Number(itemId);
+    if (!Number.isSafeInteger(id) || qty <= 0) return;
+    const obj = objHint || ItemManager.get(id);
+    if (!obj) { missing++; return; }
+    let row = items.get(id);
+    if (!row) {
+      row = {
+        id, baseId: Number(obj.item_base_id) || 0,
+        name: String(obj.name || ('Oggetto ' + id)),
+        type: String(obj.type || 'altro'),
+        up: Number(obj.item_level) || 0,
+        bag: 0, wear: 0,
+        price: getNum(obj.price), sellPrice: getNum(obj.sell_price),
+        auctionable: obj.auctionable === true,
+        tradeable: obj.tradeable === true,
+        sellable: obj.sellable === true,
+        upgradeable: obj.upgradeable === true,
+        level: getNum(obj.level),
+        image: String(obj.image || ''),
+        bonuses: readBonuses(obj)
+      };
+      items.set(id, row);
+    }
+    row[source] += qty;
+  }
+
+  // Una sola volta per item_id: non percorrere items_by_inv_id,
+  // poiché alcune chiavi inv_id puntano allo stesso stack!
+  for (const [key, inv] of Object.entries(Bag.items_by_id || {})) {
+    if (!inv) continue;
+    const id = Number(key);
+    add(id, getNum(inv.count), 'bag', inv.obj || ItemManager.get(id));
+  }
+  // Ogni slot indossato è un pezzo fisico aggiuntivo.
+  for (const slot of SLOTS) {
+    const worn = Wear.get(slot);
+    if (!worn) continue;
+    const id = Number(worn.getId());
+    add(id, 1, 'wear', ItemManager.get(id));
+  }
+
+  // Ordinamento di visualizzazione fisso per ID, senza pulsanti ordina.
+  // Gli oggetti indossati non restano in fondo alle rispettive categorie.
+  const rows = Array.from(items.values()).map(r => ({...r, count: r.bag + r.wear}));
+  rows.sort((a, b) => a.id - b.id);
+  const total = field => rows.reduce((acc, r) => acc + getNum(r[field]), 0);
+  const summary = {
+    bag: total('bag'), wear: total('wear'),
+    pieces: total('count'), unique: rows.length,
+    buy: rows.reduce((s, r) => s + r.count * r.price, 0),
+    sell: rows.reduce((s, r) => s + r.count * r.sellPrice, 0)
+  };
+  const time = new Date();
+  const world = location.hostname || 'mondo';
+  const payload = {v: 2, date: time.toISOString(), world, summary, rows};
+
+
+    if (missing > 0) throw new Error('Definizioni mancanti: '+missing+'. Pubblicazione annullata per evitare inventari incompleti.');
+    return {payload,summary,missing};
+  }
+
+  const hasClassic = typeof GM_xmlhttpRequest === 'function';
+  const hasModern = typeof GM !== 'undefined' && typeof GM.xmlHttpRequest === 'function';
+  function requestGM(method,url,data,headers={}) {
+    if (!hasClassic && !hasModern) return Promise.reject(Error('Gestore userscript senza GM_xmlhttpRequest'));
+    return new Promise((resolve,reject)=>{
+      let finished=false;
+      const yes=v=>{if(!finished){finished=true;resolve(v);}};
+      const no=v=>{if(!finished){finished=true;reject(v instanceof Error?v:Error(String(v)));}};
+      try {
+        const opts={method,url,headers,data,anonymous:true,timeout:30000,responseType:'text',
+          onload:yes,onerror:()=>no(Error('Connessione Worker non riuscita')),
+          ontimeout:()=>no(Error('Timeout di collegamento')),onabort:()=>no(Error('Richiesta annullata'))};
+        const ret=hasClassic?GM_xmlhttpRequest(opts):GM.xmlHttpRequest(opts);
+        if(ret&&typeof ret.then==='function')ret.then(yes,no);
+      }catch(e){no(e);}
+    });
+  }
+  function parseResponse(r) {
+    let data;try{data=JSON.parse(r.responseText||r.response||'{}');}
+    catch(_){throw Error('Risposta del servizio non in formato JSON (HTTP '+r.status+')');}
+    if(r.status!==200||!data.ok)throw Error(data.error||'Errore HTTP '+r.status);
+    return data;
+  }
+  async function gzipJSON(payload) {
+    if (typeof CompressionStream!=='function') throw Error('Browser senza CompressionStream');
+    const bytes=new TextEncoder().encode(JSON.stringify(payload));
+    if(bytes.byteLength>6*1024*1024)throw Error('Inventario superiore al limite JSON di 6 MiB');
+    const compressed=await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();
+    if(compressed.byteLength>750*1024)throw Error('Inventario compresso superiore al limite di 750 KiB');
+    return {compressed,rawBytes:bytes.byteLength};
+  }
+  function saveJSON(payload) {
+    const json=JSON.stringify(payload);
+    const url=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+    const a=document.createElement('a');
+    a.href=url;a.download='TWdbUP_Inventario_'+payload.world+'_'+payload.date.replace(/[:.]/g,'-')+'.json';
+    a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+    return a.download;
+  }
+  const makeButton=(text,bg)=>{
+    const b=document.createElement('button');b.type='button';b.textContent=text;
+    b.style.cssText='cursor:pointer;width:100%;padding:8px 9px;border:1px solid #49301d;border-radius:4px;background:'+bg+';color:#2e2011;font:700 12px Arial,sans-serif;';
+    return b;
+  };
+  function mount() {
+    if(!document.body||document.getElementById(ROOT_ID))return;
+    const panel=document.createElement('section');panel.id=ROOT_ID;
+    panel.style.cssText='position:fixed;bottom:18px;right:18px;z-index:2147483600;width:201px;box-sizing:border-box;padding:9px;border:2px ridge #60422b;border-radius:5px;box-shadow:0 3px 12px #0008;background:linear-gradient(#dfcba3,#b59467);color:#352316;font:12px Arial,sans-serif;display:flex;flex-direction:column;gap:6px;';
+    const title=document.createElement('div');title.textContent='TWdbUP · Inventario';title.style.cssText='font:700 14px Georgia,serif;text-align:center';
+    const btnPublish=makeButton('Pubblica online · 1 clic','#ead085');
+    const btnBackup=makeButton('Esporta JSON (riserva)','#f1ddb2');
+    const status=document.createElement('div');status.textContent='Link pubblico valido 30 giorni';status.style.cssText='font:10px Arial,sans-serif;text-align:center;overflow-wrap:anywhere;';
+    const result=document.createElement('div');result.hidden=true;result.style.cssText='padding:6px;background:#f4e3bf;border:1px solid #8f724e;overflow-wrap:anywhere;';
+    const link=document.createElement('a');link.href='#';link.textContent='Apri inventario';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText='display:block;text-align:center;font-weight:bold;';
+    const copy=makeButton('Copia link','#e9c776');copy.style.marginTop='5px';
+    copy.addEventListener('click',()=>{
+      const url=link.href;if(url&&url!==location.href){
+        if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>status.textContent='Link copiato').catch(()=>{prompt('Copia il link',url);});
+        else prompt('Copia il link',url);
+      }
+    });
+    result.append(link,copy);
+    let busy=false;
+    const setBusy=value=>{busy=value;btnPublish.disabled=value;btnBackup.disabled=value;};
+    btnBackup.addEventListener('click',()=>{
+      if(busy)return;
+      setBusy(true);try{
+        const {payload,summary}=collectInventory();
+        const file=saveJSON(payload);
+        status.textContent='Scaricato JSON: '+summary.unique.toLocaleString('it-IT')+' oggetti';
+        console.log('[TWdbUP] Backup locale',file,summary);
+      }catch(e){console.error('[TWdbUP] Backup:',e);status.textContent='ERRORE: '+(e.message||e);}
+      finally{setBusy(false);}
+    });
+    btnPublish.addEventListener('click',async()=>{
+      if(busy)return;
+      // Apriamo subito una scheda vuota nel gesto dell'utente per evitare popup blocker.
+      const tab=window.open('about:blank','_blank');
+      if(tab){try{tab.opener=null;}catch(_){}}
+      setBusy(true);result.hidden=true;
+      status.textContent='Preparazione inventario...';
+      try{
+        const {payload,summary}=collectInventory();
+        status.textContent='Comprimo '+summary.unique.toLocaleString('it-IT')+' oggetti...';
+        const {compressed,rawBytes}=await gzipJSON(payload);
+        status.textContent='Invio sicuro su Cloudflare...';
+        const health=parseResponse(await requestGM('GET',BASE+'/health?test08b='+Date.now()));
+        if(health.directUploadTest!==true)throw Error('Servizio TWdbUP non disponibile: riprova più tardi.');
+        const response=await requestGM('POST',BASE+'/api/direct/upload',compressed,{
+          'Content-Type':'application/octet-stream',
+          'X-TWUP-Format':'gzip-v1',
+          'X-TWDBUP-Client':'userscript-v02-test'
+        });
+        const data=parseResponse(response);
+        const target=new URL(data.link,BASE);
+        if(target.origin!==BASE||!/^\/i\/[A-Za-z0-9_-]{24}$/.test(target.pathname))throw Error('Link restituito non valido');
+        link.href=target.href;result.hidden=false;
+        status.textContent='Pubblicato! '+summary.pieces.toLocaleString('it-IT')+' pezzi · Scade tra 30 giorni';
+        console.log('[TWdbUP] Pubblicazione diretta OK',{world:payload.world,bag:summary.bag,wear:summary.wear,pieces:summary.pieces,unique:summary.unique,jsonBytes:rawBytes,gzipBytes:compressed.byteLength,link:target.href,expiresAt:data.expiresAt});
+        if(tab){tab.location.href=target.href;}
+      }catch(e){
+        if(tab){try{tab.close();}catch(_){}}
+        status.textContent='ERRORE: '+(e.message||e);
+        console.error('[TWdbUP] Pubblicazione diretta fallita:',e);
+      }finally{setBusy(false);}
+    });
+    panel.append(title,btnPublish,btnBackup,status,result);
+    document.body.appendChild(panel);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});
+  else mount();
+})();

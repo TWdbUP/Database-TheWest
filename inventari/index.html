@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Inventari — TWdbUP</title>
+<style>
+:root{--bg:#180d07;--panel:#341b0e;--panel2:#48260f;--gold:#d8a34d;--goldlight:#f3d295;--ink:#281709;--paper:#f0ddb4;--paper2:#fff3d8;--line:#ab7638;--muted:#dbcba8;--danger:#b53f2d}
+*{box-sizing:border-box} html{min-height:100%;background:var(--bg)}
+body{margin:0;font-family:Georgia,'Times New Roman',serif;background:radial-gradient(circle at 50% 0%,#51301b 0%,#281409 42%,#170c07 100%);color:var(--goldlight);min-height:100vh}
+main{max-width:1060px;margin:0 auto;padding:20px 15px 45px}
+header{padding:26px 24px;background:linear-gradient(135deg,#613718,#301809 75%);border:2px solid var(--line);border-radius:12px;box-shadow:0 6px 22px #0008}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}h1{font-size:clamp(27px,4vw,43px);line-height:1.1;margin:0 0 8px;color:#ffe2a4} h2{font-size:23px;margin:0 0 14px;color:#ffdf9c}h3{font-size:18px;margin:0 0 7px}
+p{margin:7px 0 12px;line-height:1.5}.sub{color:#e5c995;font-size:16px;margin:0}.tag{display:inline-block;border:1px solid #ad8042;padding:5px 10px;border-radius:12px;font-size:12px;background:#301708;margin-top:8px}
+a{color:#ffe2a4}a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #efb84f;outline-offset:2px}
+.back{border:1px solid #b9894b;padding:9px 14px;border-radius:7px;white-space:nowrap;text-decoration:none;background:#371b0d;font-size:14px}
+.testbar{font-size:13px;letter-spacing:.03em;background:#2c1a0f;color:#ffe3ab;padding:10px 14px;margin:13px 0;border:1px dashed #ad8038;border-radius:7px}
+.columns{display:grid;grid-template-columns:1fr;gap:16px;margin-top:15px}
+.panel{border:2px solid #95642f;background:linear-gradient(180deg,#42230f,#2a150b);box-shadow:inset 0 0 0 2px #f4c47612,0 8px 20px #0005;border-radius:10px;padding:22px}
+.paper{background:linear-gradient(#fff3d6,#e4c996);color:var(--ink);border:2px solid #ae7c3b;box-shadow:inset 0 0 0 2px #fff7dc90;border-radius:9px;padding:18px}
+.steps{padding-left:22px;margin:10px 0 0}.steps li{margin:7px 0;line-height:1.5}
+.field-label{display:block;font-size:14px;font-weight:700;margin-bottom:7px}.link-row{display:flex;align-items:stretch;gap:9px}.link-row input{flex:1;min-width:130px}
+input,button{font:inherit}input[type=text],input[type=url],input[type=search]{width:100%;background:#fffbeb;color:#281708;border:1px solid #a47d49;border-radius:5px;min-height:43px;padding:10px;font-size:15px}
+button,.btn{cursor:pointer;border:1px solid #94601d;background:linear-gradient(#f1d391,#d5a458);color:#2d1a08;padding:10px 15px;min-height:41px;border-radius:5px;font-weight:700;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:6px;white-space:nowrap;font-size:14px}button:hover,.btn:hover{filter:brightness(1.08)}button:disabled{opacity:.5;cursor:default}.secondary{background:linear-gradient(#e1c8a1,#c29c68)}.outline{background:transparent;color:#ffe0a8;border-color:#b78b50}.small{min-height:33px;padding:7px 10px;font-size:13px}.danger{border-color:#b3604b;background:#eed0bb;color:#742919}
+.buttons{display:flex;flex-wrap:wrap;gap:8px}.note{font-size:13px;color:#dac399}.paper .note{color:#5a4530}.row-head{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-bottom:13px}
+#search{max-width:340px}.list{display:flex;flex-direction:column;gap:9px}.item{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;background:#f4ddb3;color:#2b1a09;border:1px solid #b5884e;border-radius:6px;padding:12px}
+.item-main{min-width:210px;flex:1}.item-name{font-size:18px;font-weight:700;overflow-wrap:anywhere}.item-url{font:12px/1.5 system-ui,sans-serif;color:#6c5030;overflow-wrap:anywhere;margin-top:4px}.item-actions{display:flex;flex-wrap:wrap;gap:6px}.muted{color:#bca98d}.empty{text-align:center;padding:28px;border:1px dashed #a17a41;border-radius:8px;color:#e3cfa8}
+.counter{font-size:13px;color:#edc889;font-weight:400}.foot{font-size:13px;color:#d1b991;margin-top:15px}
+#feedback{display:none;margin-top:12px;padding:11px 13px;border-radius:6px;border:1px solid #ba965a;background:#f7eacb;color:#312011;font-size:14px}#feedback.show{display:block}#feedback.error{background:#f6d8cb;color:#6a2915;border-color:#c77b62}
+.dialog-backdrop{position:fixed;inset:0;z-index:99;background:#090402bf;display:flex;align-items:center;justify-content:center;padding:18px}
+.dialog-backdrop[hidden]{display:none}.dialog{width:min(100%,500px);background:#f3dfb5;color:#28160b;border:3px solid #9a6730;border-radius:10px;padding:23px;box-shadow:0 22px 70px #000c}
+.dialog p{font-size:15px;color:#594127}.dialog .buttons{margin-top:16px;justify-content:flex-end}.dialog input{margin:8px 0 5px}.dialog h2{color:#40220e;margin-bottom:6px}
+hr{border:0;border-top:1px solid #825328;margin:20px 0}.backup-label{font-size:13px;cursor:pointer;text-decoration:underline;color:#f8dfa8}.noscript{text-align:center;padding:25px;background:#f8d2bb;color:#400}
+@media(max-width:650px){main{padding:10px 10px 28px}.panel{padding:16px}.link-row{flex-direction:column}.link-row button{width:100%}.item-actions{width:100%}.item-actions button{flex:1}.dialog{padding:16px}}
+/* TEST 10B: titolo Inventari grande e centrato, senza logo laterale; home discreta. */
+.inventory-heading{position:relative;padding:26px 130px 24px;background:linear-gradient(180deg,#20170f 0%,#17110b 100%);border:1px solid #6b5032;border-radius:8px;box-shadow:0 6px 22px #0007}
+.inventory-heading-grid{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:5px}
+.inventory-heading-main{min-width:0;text-align:center;width:100%}
+.inventory-heading-main h1{font:700 clamp(44px,6vw,72px)/1.02 Georgia,serif;letter-spacing:.3px;color:#f5dca9;margin:0 0 7px;text-align:center}
+.inventory-heading-main .sub{color:#cab991;font-size:14px;margin:0 0 7px;text-align:center}
+.inventory-heading-main .tag{font-size:11px;margin:0;padding:4px 9px;border-color:#6b5032;background:#2b2016;color:#ddc8a0}
+.inventory-heading .back{position:absolute;right:15px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;white-space:nowrap;padding:5px 7px;border:1px solid transparent;border-radius:5px;background:transparent;text-decoration:none;font:normal 12px/1.4 system-ui,Segoe UI,Arial,sans-serif;color:#d2b589;opacity:.82;box-shadow:none}
+.inventory-heading .back:hover,.inventory-heading .back:focus-visible{color:#ffdfac;background:rgba(130,94,50,.17);border-color:rgba(230,184,112,.38);opacity:1;outline-offset:2px}
+@media(max-width:850px){.inventory-heading{padding:42px 15px 18px}.inventory-heading-main h1{font-size:clamp(40px,9vw,64px)}.inventory-heading .back{top:10px;right:10px;transform:none;font-size:11px}.inventory-heading-main .sub{font-size:12px}.inventory-heading-main .tag{font-size:10px}}
+
+/* TEST 10C: stessa gerarchia della Mappa negozi, brand sopra il titolo centrale. */
+.inventory-heading-main .inventory-brand{font:700 clamp(17px,2vw,21px)/1.18 Georgia,'Times New Roman',serif;color:#d9a960;letter-spacing:.6px;text-align:center;margin:0 auto 7px;text-shadow:0 2px 4px #0008}
+.inventory-heading-main h1{margin:0 0 7px}
+@media(max-width:850px){.inventory-heading-main .inventory-brand{font-size:17px;margin-bottom:8px}}
+</style>
+</head>
+<body>
+<noscript><div class="noscript">Attiva JavaScript per gestire la tua lista personale.</div></noscript>
+<main>
+<header class="inventory-heading">
+  <div class="inventory-heading-grid">
+    
+    <div class="inventory-heading-main">
+      <div class="inventory-brand">🤠 TWdbUP 🤠</div>
+      <h1>Inventari</h1>
+      <p class="sub">La tua rubrica personale di inventari condivisi</p>
+      <span class="tag">Nessun account · Nessun elenco pubblico · Salvataggio locale</span>
+    </div>
+    <a class="back" id="backHome" href="../index.html">← Torna alla home</a>
+  </div>
+</header>
+
+<section class="columns">
+ <section class="panel" aria-labelledby="addTitle">
+  <h2 id="addTitle">Aggiungi un inventario</h2>
+  <p>Incolla il link ricevuto. Prima di salvarlo potrai scegliere un nome da mostrare <strong>solo nella tua lista</strong>.</p>
+  <form id="addForm" novalidate>
+    <label class="field-label" for="linkInput">Link inventario TWdbUP</label>
+    <div class="link-row"><input id="linkInput" type="url" inputmode="url" placeholder="https://import-inventory-tw.twdbup.workers.dev/i/..." autocomplete="off" required><button type="submit">Aggiungi inventario</button></div>
+  </form>
+  <div id="feedback" role="status" aria-live="polite"></div>
+ </section>
+ <section class="panel" aria-labelledby="listTitle">
+  <div class="row-head"><h2 id="listTitle" style="margin:0">La mia lista <span class="counter" id="count"></span></h2><input id="search" type="search" aria-label="Cerca un nome o un link salvato" placeholder="Cerca nella mia lista..."></div>
+  <div id="list" class="list"></div>
+  <hr>
+  <div class="row-head" style="margin-bottom:6px"><h3 style="margin:0">Salva o recupera la tua lista</h3><div class="buttons"><button id="exportBtn" type="button" class="outline small">Esporta elenco</button><button id="importBtn" type="button" class="outline small">Importa elenco</button></div></div>
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
+  <p class="note">L'elenco viene conservato soltanto in questo browser e su questo sito. Per passare a un altro PC o browser, usa Esporta/Importa elenco.</p>
+ </section>
+ <section class="paper" aria-labelledby="instructionsTitle">
+  <h2 id="instructionsTitle" style="color:#48250c">Come funziona</h2>
+  <ol class="steps">
+   <li><strong>Chi pubblica:</strong> installa lo userscript TWdbUP in Tampermonkey/Violentmonkey, apre The West e preme <strong>Pubblica online · 1 clic</strong>. Il link dell'inventario si apre automaticamente.</li>
+   <li><strong>Chi riceve il link:</strong> apre questa pagina, lo incolla qui sopra e preme <strong>Aggiungi inventario</strong>.</li>
+   <li>Alla domanda <strong>«Vuoi assegnargli un nome?»</strong>, scrive un nome o seleziona <strong>Salva senza nome</strong>.</li>
+   <li>Può poi aprire, rinominare, sostituire il link o eliminare una voce dalla propria lista.</li>
+  </ol>
+  <p class="note" style="margin-top:13px"><strong>Importante:</strong> gli inventari online scadono dopo 30 giorni dalla pubblicazione. I collegamenti nella rubrica non si cancellano automaticamente: potrai sostituire un link scaduto con uno nuovo.</p>
+  <div class="buttons" style="margin-top:13px"><a class="btn secondary" href="./TWdbUP_Inventario_v0_2_1.txt" download>Scarica userscript v0.2.1 (TXT)</a></div>
+  <p class="note"><strong>Installazione:</strong> scarica il TXT, apri Tampermonkey o Violentmonkey, crea un nuovo userscript e incolla il contenuto del TXT. Salva e ricarica The West: comparirà il pulsante <strong>Pubblica online · 1 clic</strong> soltanto dentro il gioco (non sulla Home o sulla Wiki). La pubblicazione genera un link valido 30 giorni. Gli inventari caricati sono accessibili a chi possiede il collegamento. Il servizio applica limiti anti-abuso e scadenza automatica a 30 giorni.</p>
+ </section>
+</section>
+<p class="foot">Privacy della rubrica: i nomi che assegni ai link non vengono inviati al Worker. Chi usa lo stesso profilo browser può vedere i collegamenti salvati. Ogni inventario online resta accessibile a chiunque possieda il suo URL.</p>
+</main>
+<div id="dialogLayer" class="dialog-backdrop" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+    <h2 id="dialogTitle">Vuoi assegnargli un nome?</h2>
+    <p id="dialogText">Scegli un nome facoltativo: lo vedrai soltanto tu.</p>
+    <label class="field-label" for="nameInput">Nome personalizzato</label>
+    <input id="nameInput" type="text" maxlength="80" placeholder="Es. Socio it22" autocomplete="off">
+    <div class="buttons"><button id="cancelModal" type="button" class="secondary">Annulla</button><button id="saveEmpty" type="button" class="secondary">Salva senza nome</button><button id="saveModal" type="button">Salva</button></div>
+  </div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'twdbup_inventari_rubrica_v1';
+  const HOST='import-inventory-tw.twdbup.workers.dev';
+  const $=id=>document.getElementById(id);
+  let list=[]; let modalMode=null; let modalId=null; let pendingUrl=null; let lastFocus=null; let storageOk=true;
+  // Il tasto Home funziona sia nella prova locale sia nel sito online.
+
+  function canonicalUrl(raw){
+    if(typeof raw!=='string'||raw.length>500) return null;
+    try{
+      const url=new URL(raw.trim());
+      const match=url.pathname.match(/^\/i\/([a-zA-Z0-9_-]{8,128})\/?$/);
+      if(url.protocol!=='https:'||url.hostname!==HOST||url.username||url.password||url.port||!match) return null;
+      return `https://${HOST}/i/${match[1]}`;
+    }catch(_){return null;}
+  }
+  function idFrom(url){return url.slice(url.lastIndexOf('/')+1)}
+  function safeName(x){return typeof x==='string'?x.trim().slice(0,80):''}
+  function cleanItem(x){
+    if(!x || typeof x!=='object')return null;
+    const url=canonicalUrl(x.url); if(!url)return null;
+    return {url,name:safeName(x.name),added:typeof x.added==='string'?x.added:new Date().toISOString()};
+  }
+  function readList(){
+    try{
+      const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return [];
+      const parsed=JSON.parse(raw);if(!Array.isArray(parsed))return [];
+      const seen=new Set();return parsed.slice(0,500).map(cleanItem).filter(item=>{if(!item||seen.has(item.url))return false;seen.add(item.url);return true});
+    }catch(e){storageOk=false;return []}
+  }
+  function persist(){
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(list)); storageOk=true; return true}
+    catch(e){storageOk=false;notify('Impossibile salvare nel browser. Usa Esporta elenco per non perdere la lista.',true);return false}
+  }
+  function notify(message,error=false){const box=$('feedback');box.textContent=message;box.className='show'+(error?' error':'')}
+  function button(text,cls,callback){const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=text;b.addEventListener('click',callback);return b}
+  function render(){
+    const q=$('search').value.trim().toLocaleLowerCase('it');
+    const filtered=list.filter(i=>(i.name+' '+i.url).toLocaleLowerCase('it').includes(q));
+    $('count').textContent=`(${list.length})`;
+    const root=$('list');root.replaceChildren();
+    if(!filtered.length){const div=document.createElement('div');div.className='empty';div.textContent=list.length?'Nessun risultato per questa ricerca.':'Ancora nessun inventario. Incolla un link per cominciare!';root.appendChild(div);return}
+    for(const item of filtered){
+      const row=document.createElement('article');row.className='item';
+      const main=document.createElement('div');main.className='item-main';
+      const name=document.createElement('div');name.className='item-name';name.textContent=item.name||'Inventario senza nome';
+      const detail=document.createElement('div');detail.className='item-url';detail.textContent=item.url;
+      main.append(name,detail);
+      const actions=document.createElement('div');actions.className='item-actions';
+      const open=document.createElement('a');open.className='btn small';open.href=item.url;open.target='_blank';open.rel='noopener noreferrer';open.textContent='Apri';
+      actions.append(open,button('Rinomina','secondary small',()=>showModal('rename',item)),button('Sostituisci link','secondary small',()=>replaceUrl(item)),button('Elimina','danger small',()=>removeItem(item)));
+      row.append(main,actions);root.appendChild(row);
+    }
+  }
+  function showModal(mode,item=null){
+    lastFocus=document.activeElement;modalMode=mode;modalId=item?.url||null;
+    $('dialogTitle').textContent=mode==='add'?'Vuoi assegnargli un nome?':'Rinomina inventario';
+    $('dialogText').textContent=mode==='add'?'Scegli un nome facoltativo: rimarrà soltanto nella tua rubrica.':'Modifica soltanto il nome nella tua rubrica personale.';
+    $('nameInput').value=mode==='rename'?(item?.name||''):'';
+    $('saveEmpty').hidden=mode==='rename';
+    $('dialogLayer').hidden=false; $('nameInput').focus();
+  }
+  function closeModal(){
+    $('dialogLayer').hidden=true;modalMode=null;modalId=null;pendingUrl=null;
+    try{lastFocus?.focus()}catch(_){}
+  }
+  function saveDialog(forceBlank=false){
+    const name=forceBlank?'':safeName($('nameInput').value);
+    if(modalMode==='add'){
+      if(!pendingUrl){closeModal();return}
+      list.unshift({url:pendingUrl,name,added:new Date().toISOString()});
+      persist();render();$('linkInput').value='';notify('Inventario aggiunto alla tua lista personale.');
+    }else if(modalMode==='rename'){
+      const item=list.find(x=>x.url===modalId);
+      if(item){item.name=name;persist();render();notify('Nome aggiornato soltanto nella tua lista.');}
+    }
+    closeModal();
+  }
+  function replaceUrl(item){
+    const typed=prompt('Incolla il nuovo link per '+(item.name||'questo inventario')+':',item.url);
+    if(typed===null)return;
+    const url=canonicalUrl(typed);
+    if(!url){notify('Link non valido. Serve un indirizzo TWdbUP del tipo https://import-inventory-tw.twdbup.workers.dev/i/...',true);return}
+    if(url!==item.url&&list.some(x=>x.url===url)){notify('Questo inventario è già nella tua lista.',true);return}
+    item.url=url;persist();render();notify('Link sostituito. Il nome personalizzato è rimasto invariato.');
+  }
+  function removeItem(item){
+    if(!confirm('Eliminare «'+(item.name||'Inventario senza nome')+'» dalla tua lista?\nL’inventario pubblicato NON sarà cancellato.'))return;
+    list=list.filter(x=>x.url!==item.url);persist();render();notify('Collegamento rimosso dalla tua lista.');
+  }
+  $('addForm').addEventListener('submit',e=>{
+    e.preventDefault();const url=canonicalUrl($('linkInput').value);
+    if(!url){notify('Link non valido. Incolla un link pubblico TWdbUP che termina con /i/codice.',true);return}
+    if(list.some(x=>x.url===url)){notify('Questo inventario è già presente nella tua lista.',true);return}
+    if(list.length>=500){notify('Limite di 500 collegamenti raggiunto. Elimina qualche voce.',true);return}
+    pendingUrl=url;showModal('add');
+  });
+  $('saveModal').addEventListener('click',()=>saveDialog(false));
+  $('saveEmpty').addEventListener('click',()=>saveDialog(true));
+  $('cancelModal').addEventListener('click',closeModal);
+  $('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveDialog(false)}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('dialogLayer').hidden)closeModal()});
+  $('dialogLayer').addEventListener('click',e=>{if(e.target===$('dialogLayer'))closeModal()});
+  $('search').addEventListener('input',render);
+  $('exportBtn').addEventListener('click',()=>{
+    const payload={version:1,exportedAt:new Date().toISOString(),inventories:list};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='TWdbUP_Miei_Inventari_backup.json';a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+    notify('Backup della lista preparato. Conserva il file per un altro PC o browser.');
+  });
+  $('importBtn').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',async e=>{
+    const file=e.target.files?.[0];e.target.value='';if(!file)return;
+    if(file.size>512000){notify('Backup troppo grande (limite 500 KB).',true);return}
+    try{
+      const data=JSON.parse(await file.text());
+      if(!data||data.version!==1||!Array.isArray(data.inventories)){notify('Non è un backup valido della rubrica TWdbUP.',true);return}
+      const existing=new Set(list.map(x=>x.url));let count=0;
+      for(const raw of data.inventories.slice(0,500)){
+        const item=cleanItem(raw);if(item&&!existing.has(item.url)&&list.length<500){list.push(item);existing.add(item.url);count++}
+      }
+      persist();render();notify(`Importazione completata: ${count} collegamenti nuovi. Quelli già presenti sono stati mantenuti.`);
+    }catch(_){notify('File JSON non leggibile o non valido.',true)}
+  });
+  list=readList();render();
+  if(!storageOk)notify('Il browser non permette di leggere il salvataggio locale. Usa il backup per conservare la lista.',true);
+})();
+</script>
+</body></html>
