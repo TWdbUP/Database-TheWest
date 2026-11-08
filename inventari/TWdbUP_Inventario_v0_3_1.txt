@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         TWdbUP — Inventario (pubblica con 1 clic)
+// @name         TWdbUP — Inventario
 // @namespace    https://github.com/TWdbUP/Database-TheWest
-// @version      0.2.1
-// @description  Pubblica Bag+Wear con un clic dentro il gioco; esporta JSON di riserva.
+// @version      0.3.1
+// @description  Pubblica il tuo inventario The West dalla finestra Script con un clic. Link valido 30 giorni.
 // @include      https://*.the-west.*/game.php*
 // @run-at       document-idle
 // @noframes
@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /*
- * TWdbUP Inventario v0.2.1 — versione pubblica.
+ * TWdbUP Inventario - versione pubblica con integrazione nella finestra Script del gioco.
  * La pubblicazione e' esplicita: solo clic su "Pubblica online".
  * Inventario pubblico a chi possiede il link, conservato per 30 giorni.
  * Gli accessi al sito richiedono una connessione Internet; le immagini vengono dal CDN.
@@ -22,7 +22,7 @@
 (() => {
   'use strict';
   const BASE = 'https://import-inventory-tw.twdbup.workers.dev';
-  const ROOT_ID='twdbup-inventory-direct-v02';
+  const ROOT_ID='twdbup-inventory-script-v03';
   // Secondo controllo: esegui SOLO sui mondi di gioco, nella vera pagina game.php.
   // Non attivarti su www.the-west.it, wiki.the-west.it o altre sottopagine.
   const worldHost = /^[a-z]{2,6}\d{1,4}\.the-west\.(?:[a-z]{2,3}|com\.(?:br|pt))$/i.test(location.hostname);
@@ -245,76 +245,131 @@
     setTimeout(()=>URL.revokeObjectURL(url),5000);
     return a.download;
   }
-  const makeButton=(text,bg)=>{
-    const b=document.createElement('button');b.type='button';b.textContent=text;
-    b.style.cssText='cursor:pointer;width:100%;padding:8px 9px;border:1px solid #49301d;border-radius:4px;background:'+bg+';color:#2e2011;font:700 12px Arial,sans-serif;';
-    return b;
+  // TEST 14: The West dispone della propria finestra Script.
+  // TheWestApi.register(...).setGui(...) crea una scheda senza pannelli fissi.
+  // Il contenuto HTML viene ricreato dal gioco; i clic sono gestiti con delega
+  // sul documento, quindi continuano a funzionare anche riaprendo la finestra.
+  const TAB_NAME='TWdbUP Inventario';
+  const HTML = `<div id="${ROOT_ID}" style="max-width:570px;margin:18px auto;padding:14px 18px;background:#e8d4ac;border:1px solid #8a6946;border-radius:6px;color:#3c2615;font:14px Georgia,serif;text-align:center;box-sizing:border-box;">
+    <h2 style="margin:3px 0 10px;font-size:23px;color:#573015;">TWdbUP · Inventario</h2>
+    <p style="margin:5px 0 16px;font-size:13px;">Condividi l'inventario del tuo personaggio con un clic.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button type="button" data-twdbup-action="publish" style="cursor:pointer;padding:10px 15px;background:#ead085;color:#32200c;border:1px solid #6b4625;border-radius:4px;font-weight:bold;">Pubblica online · 1 clic</button>
+      <button type="button" data-twdbup-action="backup" style="cursor:pointer;padding:10px 15px;background:#f1ddb2;color:#32200c;border:1px solid #6b4625;border-radius:4px;font-weight:bold;">Esporta JSON (riserva)</button>
+    </div>
+    <div data-twdbup-status style="margin-top:12px;font:12px Arial,sans-serif;overflow-wrap:anywhere;">Link condivisibile per 30 giorni.</div>
+    <div data-twdbup-result hidden style="margin:12px auto 0;padding:9px;border:1px solid #8f724e;background:#f4e3bf;max-width:340px;">
+      <a data-twdbup-link href="#" target="_blank" rel="noopener noreferrer" style="font-weight:bold;">Apri inventario</a>
+      <button type="button" data-twdbup-action="copy" style="display:block;margin:8px auto 0;cursor:pointer;background:#e9c776;color:#352316;border:1px solid #6b4625;border-radius:4px;padding:5px 12px;">Copia link</button>
+    </div>
+    <p style="margin:14px 0 2px;font:11px Arial,sans-serif;color:#725536;">L'inventario è pubblico per chi conosce il link e scade dopo 30 giorni.</p>
+  </div>`;
+
+  let busy=false;
+  let publishedLink='';
+  const all = selector => Array.from(document.querySelectorAll('#'+ROOT_ID+' '+selector));
+  const setStatus = message => all('[data-twdbup-status]').forEach(el=>el.textContent=message);
+  const setBusy = value => {
+    busy=value;
+    all('[data-twdbup-action="publish"],[data-twdbup-action="backup"]').forEach(el=>el.disabled=value);
   };
-  function mount() {
-    if(!document.body||document.getElementById(ROOT_ID))return;
-    const panel=document.createElement('section');panel.id=ROOT_ID;
-    panel.style.cssText='position:fixed;bottom:18px;right:18px;z-index:2147483600;width:201px;box-sizing:border-box;padding:9px;border:2px ridge #60422b;border-radius:5px;box-shadow:0 3px 12px #0008;background:linear-gradient(#dfcba3,#b59467);color:#352316;font:12px Arial,sans-serif;display:flex;flex-direction:column;gap:6px;';
-    const title=document.createElement('div');title.textContent='TWdbUP · Inventario';title.style.cssText='font:700 14px Georgia,serif;text-align:center';
-    const btnPublish=makeButton('Pubblica online · 1 clic','#ead085');
-    const btnBackup=makeButton('Esporta JSON (riserva)','#f1ddb2');
-    const status=document.createElement('div');status.textContent='Link pubblico valido 30 giorni';status.style.cssText='font:10px Arial,sans-serif;text-align:center;overflow-wrap:anywhere;';
-    const result=document.createElement('div');result.hidden=true;result.style.cssText='padding:6px;background:#f4e3bf;border:1px solid #8f724e;overflow-wrap:anywhere;';
-    const link=document.createElement('a');link.href='#';link.textContent='Apri inventario';link.target='_blank';link.rel='noopener noreferrer';link.style.cssText='display:block;text-align:center;font-weight:bold;';
-    const copy=makeButton('Copia link','#e9c776');copy.style.marginTop='5px';
-    copy.addEventListener('click',()=>{
-      const url=link.href;if(url&&url!==location.href){
-        if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(()=>status.textContent='Link copiato').catch(()=>{prompt('Copia il link',url);});
-        else prompt('Copia il link',url);
-      }
-    });
-    result.append(link,copy);
-    let busy=false;
-    const setBusy=value=>{busy=value;btnPublish.disabled=value;btnBackup.disabled=value;};
-    btnBackup.addEventListener('click',()=>{
-      if(busy)return;
-      setBusy(true);try{
-        const {payload,summary}=collectInventory();
-        const file=saveJSON(payload);
-        status.textContent='Scaricato JSON: '+summary.unique.toLocaleString('it-IT')+' oggetti';
-        console.log('[TWdbUP] Backup locale',file,summary);
-      }catch(e){console.error('[TWdbUP] Backup:',e);status.textContent='ERRORE: '+(e.message||e);}
-      finally{setBusy(false);}
-    });
-    btnPublish.addEventListener('click',async()=>{
-      if(busy)return;
-      // Apriamo subito una scheda vuota nel gesto dell'utente per evitare popup blocker.
-      const tab=window.open('about:blank','_blank');
-      if(tab){try{tab.opener=null;}catch(_){}}
-      setBusy(true);result.hidden=true;
-      status.textContent='Preparazione inventario...';
-      try{
-        const {payload,summary}=collectInventory();
-        status.textContent='Comprimo '+summary.unique.toLocaleString('it-IT')+' oggetti...';
-        const {compressed,rawBytes}=await gzipJSON(payload);
-        status.textContent='Invio sicuro su Cloudflare...';
-        const health=parseResponse(await requestGM('GET',BASE+'/health?test08b='+Date.now()));
-        if(health.directUploadTest!==true)throw Error('Servizio TWdbUP non disponibile: riprova più tardi.');
-        const response=await requestGM('POST',BASE+'/api/direct/upload',compressed,{
-          'Content-Type':'application/octet-stream',
-          'X-TWUP-Format':'gzip-v1',
-          'X-TWDBUP-Client':'userscript-v02-test'
-        });
-        const data=parseResponse(response);
-        const target=new URL(data.link,BASE);
-        if(target.origin!==BASE||!/^\/i\/[A-Za-z0-9_-]{24}$/.test(target.pathname))throw Error('Link restituito non valido');
-        link.href=target.href;result.hidden=false;
-        status.textContent='Pubblicato! '+summary.pieces.toLocaleString('it-IT')+' pezzi · Scade tra 30 giorni';
-        console.log('[TWdbUP] Pubblicazione diretta OK',{world:payload.world,bag:summary.bag,wear:summary.wear,pieces:summary.pieces,unique:summary.unique,jsonBytes:rawBytes,gzipBytes:compressed.byteLength,link:target.href,expiresAt:data.expiresAt});
-        if(tab){tab.location.href=target.href;}
-      }catch(e){
-        if(tab){try{tab.close();}catch(_){}}
-        status.textContent='ERRORE: '+(e.message||e);
-        console.error('[TWdbUP] Pubblicazione diretta fallita:',e);
-      }finally{setBusy(false);}
-    });
-    panel.append(title,btnPublish,btnBackup,status,result);
-    document.body.appendChild(panel);
+  const setResult = url => {
+    publishedLink=url;
+    all('[data-twdbup-result]').forEach(el=>el.hidden=!url);
+    all('[data-twdbup-link]').forEach(el=>{el.href=url||'#';});
+  };
+  const copyLink = () => {
+    if(!publishedLink)return;
+    if(navigator.clipboard?.writeText){
+      navigator.clipboard.writeText(publishedLink)
+        .then(()=>setStatus('Link copiato'))
+        .catch(()=>prompt('Copia il link',publishedLink));
+    }else prompt('Copia il link',publishedLink);
+  };
+  async function publishFromGame() {
+    // Apertura subito nel gesto dell'utente: evita i popup blocker.
+    const tab=window.open('about:blank','_blank');
+    if(tab){try{tab.opener=null;}catch(_) {}}
+    setBusy(true);setResult('');setStatus('Preparazione inventario...');
+    try{
+      const {payload,summary}=collectInventory();
+      setStatus('Comprimo '+summary.unique.toLocaleString('it-IT')+' oggetti...');
+      const {compressed,rawBytes}=await gzipJSON(payload);
+      setStatus('Invio su Cloudflare...');
+      const health=parseResponse(await requestGM('GET',BASE+'/health?test14='+Date.now()));
+      if(health.directUploadTest!==true)throw Error('Servizio di pubblicazione diretta non disponibile');
+      const response=await requestGM('POST',BASE+'/api/direct/upload',compressed,{
+        'Content-Type':'application/octet-stream',
+        'X-TWUP-Format':'gzip-v1',
+        'X-TWDBUP-Client':'userscript-v02-test'
+      });
+      const data=parseResponse(response);
+      const target=new URL(data.link,BASE);
+      if(target.origin!==BASE||!/^\/i\/[A-Za-z0-9_-]{24}$/.test(target.pathname))throw Error('Link restituito non valido');
+      setResult(target.href);
+      setStatus('Pubblicato! '+summary.pieces.toLocaleString('it-IT')+' pezzi · Scade tra 30 giorni');
+      console.log('[TWdbUP] Pubblicazione TEST 14 OK',{world:payload.world,bag:summary.bag,wear:summary.wear,pieces:summary.pieces,unique:summary.unique,jsonBytes:rawBytes,gzipBytes:compressed.byteLength,link:target.href,expiresAt:data.expiresAt});
+      if(tab){tab.location.href=target.href;}
+    }catch(e){
+      if(tab){try{tab.close();}catch(_) {}}
+      setStatus('ERRORE: '+(e.message||e));
+      console.error('[TWdbUP] Pubblicazione TEST 14 fallita:',e);
+    }finally{setBusy(false);}
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});
-  else mount();
+  function backupFromGame() {
+    setBusy(true);
+    try{
+      const {payload,summary}=collectInventory();
+      const file=saveJSON(payload);
+      setStatus('Scaricato JSON: '+summary.unique.toLocaleString('it-IT')+' oggetti');
+      console.log('[TWdbUP] Backup locale',file,summary);
+    }catch(e){
+      console.error('[TWdbUP] Backup:',e);
+      setStatus('ERRORE: '+(e.message||e));
+    }finally{setBusy(false);}
+  }
+  document.addEventListener('click',event=>{
+    const target=event.target;
+    if(!(target instanceof Element))return;
+    const button=target.closest('[data-twdbup-action]');
+    if(!button || !button.closest('#'+ROOT_ID))return;
+    event.preventDefault();
+    event.stopPropagation();
+    const action=button.getAttribute('data-twdbup-action');
+    if(action==='copy'){copyLink();return;}
+    if(busy)return;
+    if(action==='backup')backupFromGame();
+    if(action==='publish')void publishFromGame();
+  },true);
+
+  let registered=false;
+  function registerTab() {
+    if(registered)return true;
+    const game=getPage();
+    if(typeof game.TheWestApi?.register!=='function')return false;
+    try{
+      const entry=game.TheWestApi.register('TWDBUP_INVENTORY',TAB_NAME,'2.0','99','TWdbUP','https://twdbup.github.io/Database-TheWest/inventari/');
+      if(!entry || typeof entry.setGui!=='function')throw Error('TheWestApi.setGui non disponibile');
+      entry.setGui(HTML);
+      registered=true;
+      console.log('[TWdbUP] TEST 14: scheda registrata nella finestra Script. Nessun pannello fisso.');
+      return true;
+    }catch(e){
+      // Evitiamo registrazioni ripetute se l'API ha già registrato il nostro ID.
+      registered=true;
+      console.error('[TWdbUP] TEST 14: integrazione finestra Script non riuscita:',e);
+      return true;
+    }
+  }
+  // Aspetta che il gioco abbia inizializzato TheWestApi, senza modificare il menu.
+  if(!registerTab()){
+    let tries=0;
+    const timer=setInterval(()=>{
+      tries++;
+      if(registerTab()||tries>=180){
+        clearInterval(timer);
+        if(!registered)console.warn('[TWdbUP] TEST 14: TheWestApi non trovata dopo 90 secondi. Ricarica il mondo e verifica che la finestra Script sia disponibile.');
+      }
+    },500);
+  }
 })();
